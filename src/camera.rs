@@ -1,6 +1,11 @@
 use std::f32::consts::PI;
 
 use bevy::{
+    core_pipeline::{
+        bloom::{BloomCompositeMode, BloomSettings},
+        tonemapping::Tonemapping,
+    },
+
     core_pipeline::clear_color::ClearColorConfig,
     prelude::*,
     render::{
@@ -177,7 +182,9 @@ pub fn setup_camera(
 
             commands
                 .entity(entity)
-                .insert((UiCameraConfig { show_ui: false }, camera));
+                .insert((UiCameraConfig { show_ui: false }, camera))
+                .insert(BloomSettings::default());
+
 
             let render_layer = RenderLayers::layer((RenderLayers::TOTAL_LAYERS - 1) as u8);
             let ui_layer = RenderLayers::layer((RenderLayers::TOTAL_LAYERS - 2) as u8);
