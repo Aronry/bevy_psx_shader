@@ -183,7 +183,7 @@ pub fn setup_camera(
             commands
                 .entity(entity)
                 .insert((UiCameraConfig { show_ui: false }, camera))
-                .insert(BloomSettings::default());
+                .insert(BloomSettings::NATURAL);
 
 
             let render_layer = RenderLayers::layer((RenderLayers::TOTAL_LAYERS - 1) as u8);
