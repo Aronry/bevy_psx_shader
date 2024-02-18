@@ -41,8 +41,9 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     }
 
     if (final_col.x == 0. && final_col.y == 0. && final_col.z == 0.) {
-        final_col = material.replace_color;
+        final_col = material.replace_color * (1. - in.uv.y);
     }
+
 
     return vec4(final_col, 1.0);
 }
