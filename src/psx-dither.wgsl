@@ -2,8 +2,10 @@
 #import bevy_sprite::mesh2d_bindings
 
 struct PsxDitherMaterial {
+    replace_color: vec3<f32>,
     dither_amount: f32,
-    banding_enabled: u32
+    banding_enabled: u32,
+    time: f32,
 };
 
 @group(1) @binding(0)
@@ -31,9 +33,16 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     let dith = textureSample(dither_color_texture, dither_color_sampler, in.uv * (buf_size / dith_size)).rgb - 0.5;
     var final_col = vec3(0.0, 0.0, 0.0);
     if material.banding_enabled > 0u {
+    //    final_col = round(base_col.rgb * material.dither_amount + dith * (1.0)) / material.dither_amount;
+        
         final_col = round(base_col.rgb * material.dither_amount + dith * (1.0)) / material.dither_amount;
     } else {
         final_col = round(base_col.rgb * material.dither_amount + dith * (0.0)) / material.dither_amount;
     }
+
+    if (final_col.x == 0. && final_col.y == 0. && final_col.z == 0.) {
+        final_col = material.replace_color;
+    }
+
     return vec4(final_col, 1.0);
 }

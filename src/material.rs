@@ -77,6 +77,8 @@ impl Default for PsxMaterial {
 #[derive(AsBindGroup, Debug, Clone, Asset, TypePath)]
 pub struct PsxDitherMaterial {
     #[uniform(0)]
+    pub replace_color: Vec3,
+    #[uniform(0)]
     pub dither_amount: f32,
     #[uniform(0)]
     pub banding_enabled: u32,
@@ -95,6 +97,7 @@ pub struct PsxDitherMaterial {
 impl Default for PsxDitherMaterial {
     fn default() -> Self {
         Self {
+            replace_color: Vec3::ZERO,
             dither_amount: 48.0,
             dither_color_texture: Some(PSX_DITHER_HANDLE),
             banding_enabled: 1,
