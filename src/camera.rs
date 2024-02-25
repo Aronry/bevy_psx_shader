@@ -175,7 +175,7 @@ pub fn setup_camera(
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
-                        fov: 64. * PI / 180.,
+                        fov: 105. * PI / 180.,
                         ..default()
                     }),
                     ..Default::default()
@@ -191,7 +191,7 @@ pub fn setup_camera(
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
-                        fov: 64. * PI / 180.,
+                        fov: 105. * PI / 180.,
                         ..default()
                     }),
                     ..Default::default()
