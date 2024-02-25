@@ -15,7 +15,7 @@ use bevy::{
 
 use crate::material::{
     PsxDitherMaterial, PsxMaterial, PSX_DITHER_HANDLE, PSX_DITH_SHADER_HANDLE,
-    PSX_FRAG_SHADER_HANDLE, PSX_VERT_SHADER_HANDLE,
+    PSX_FRAG_SHADER_HANDLE, PSX_VERT_SHADER_HANDLE, PSX_LUT_HANDLE
 };
 
 pub fn image_load(bytes: &[u8],_unused: String) -> Image {
@@ -45,10 +45,14 @@ impl Plugin for PsxPlugin {
             .register_type::<ScalingMode>()
             .register_type::<Aabb>()
             .add_systems(PostUpdate, camera::setup_camera)
-            .add_systems(Update,camera::scale_render_image);
+            .add_systems(Update,camera::scale_render_image)
+            .add_systems(PostUpdate,material::adapt_image_for_lut_use);
 
 
         load_internal_binary_asset!(app, PSX_DITHER_HANDLE, "psx-dith.png", image_load);
+
+        load_internal_binary_asset!(app, PSX_LUT_HANDLE, "neo.png", image_load);
+
 
         load_internal_asset!(
             app,

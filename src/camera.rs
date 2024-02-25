@@ -15,7 +15,9 @@ use bevy::{
     window::PrimaryWindow,
 };
 
-use crate::material::PsxDitherMaterial;
+use bevy::render::render_resource::*;
+
+use crate::material::{Lut, PsxDitherMaterial, PSX_LUT_HANDLE};
 
 #[derive(Component)]
 pub struct PsxCamera {
@@ -116,6 +118,27 @@ pub fn setup_camera(
                 ..default()
             };
 
+            
+            let lut_image = images
+                .get_mut(&PSX_LUT_HANDLE)
+                .expect("Handle should point to asset");
+
+            // The LUT is a 3d texture. It has 64 layers, each of which is a 64x64 image.
+            lut_image.texture_descriptor.size = Extent3d {
+                width: 64,
+                height: 64,
+                depth_or_array_layers: 64,
+            };
+            lut_image.texture_descriptor.dimension = TextureDimension::D3;
+            lut_image.texture_descriptor.format = TextureFormat::Rgba8Unorm;
+
+            lut_image.texture_view_descriptor = Some(TextureViewDescriptor {
+                label: Some("LUT Texture View"),
+                format: Some(TextureFormat::Rgba8Unorm),
+                dimension: Some(TextureViewDimension::D3),
+                ..default()
+            });
+
             // This is the texture that will be rendered to.
             let mut image = Image {
                 texture_descriptor: TextureDescriptor {
@@ -152,7 +175,7 @@ pub fn setup_camera(
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
-                        fov: 105. * PI / 180.,
+                        fov: 64. * PI / 180.,
                         ..default()
                     }),
                     ..Default::default()
@@ -168,7 +191,7 @@ pub fn setup_camera(
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
-                        fov: 105. * PI / 180.,
+                        fov: 64. * PI / 180.,
                         ..default()
                     }),
                     ..Default::default()
@@ -303,3 +326,5 @@ pub fn scale_render_image(
         }
     }
 }
+
+

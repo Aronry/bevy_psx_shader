@@ -18,6 +18,10 @@ var base_color_sampler: sampler;
 var dither_color_texture: texture_2d<f32>;
 @group(1) @binding(4)
 var dither_color_sampler: sampler;
+@group(1) @binding(5)
+var lut_texture: texture_3d<f32>;
+@group(1) @binding(6)
+var lut_sampler: sampler;
 
 struct FragmentInput {
     @location(0) c_position: vec4<f32>,
@@ -44,6 +48,15 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
         final_col = material.replace_color * (1. - in.uv.y);
     }
 
+    let half_texel = vec3<f32>(1.0 / 64. / 2.);
 
-    return vec4(final_col, 1.0);
+    // Notice the ".rbg".
+    // If we sample the LUT using ".rgb" instead,
+    // the way the 3D texture is loaded will mean the
+    // green and blue colors are swapped.
+    // This mitigates that.
+    let raw_color = final_col.rbg;
+    return vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color + half_texel).rgb, 1.0);
+
+ //  return vec4(final_col, 1.0);
 }
