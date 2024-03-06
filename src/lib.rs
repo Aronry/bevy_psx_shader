@@ -51,7 +51,7 @@ impl Plugin for PsxPlugin {
 
         load_internal_binary_asset!(app, PSX_DITHER_HANDLE, "psx-dith.png", image_load);
 
-        load_internal_binary_asset!(app, PSX_LUT_HANDLE, "crazylut.png", image_load);
+        load_internal_binary_asset!(app, PSX_LUT_HANDLE, "neutral.png", image_load);
 
 
         load_internal_asset!(
