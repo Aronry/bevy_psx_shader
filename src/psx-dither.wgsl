@@ -33,10 +33,7 @@ struct FragmentInput {
 fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     let half_texel = vec3<f32>(1.0 / 64. / 2.);
 
-    let raw_color = textureSample(base_color_texture, base_color_sampler, in.uv).rbg;
-    let base_col = vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color + half_texel).rgb, 1.0);
-
-//    let base_col = textureSample(base_color_texture, base_color_sampler, in.uv);
+    let base_col = textureSample(base_color_texture, base_color_sampler, in.uv);
     let dith_size = vec2<f32>(textureDimensions(dither_color_texture));
     let buf_size = vec2<f32>(textureDimensions(base_color_texture));
     let dith = textureSample(dither_color_texture, dither_color_sampler, in.uv * (buf_size / dith_size)).rgb - 0.5;
@@ -60,8 +57,8 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     // the way the 3D texture is loaded will mean the
     // green and blue colors are swapped.
     // This mitigates that.
-   // let raw_color = final_col.rbg;
-   // return vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color + half_texel).rgb, 1.0);
+    let raw_color = final_col.rbg;
+    return vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color + half_texel).rgb, 1.0);
 
-   return vec4(final_col, 1.0);
+ //  return vec4(final_col, 1.0);
 }
