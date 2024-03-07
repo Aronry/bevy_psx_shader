@@ -46,10 +46,10 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
         final_col = round(base_col.rgb * material.dither_amount + dith * (0.0)) / material.dither_amount;
     }
 
-    if (final_col.x == 0. && final_col.y == 0. && final_col.z == 0.) {
+/*     if (final_col.x == 0. && final_col.y == 0. && final_col.z == 0.) {
         final_col = material.replace_color * (1. - in.uv.y);
     }
-
+ */
 
 
     // Notice the ".rbg".
