@@ -60,6 +60,9 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     }
  */
 
+    if fract(in.uv.y * 1080. / 2.) >= 0.5 {
+        final_col += vec3(0.1);
+    }
 
 
     return vec4(final_col, 1.0);
