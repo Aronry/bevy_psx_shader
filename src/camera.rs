@@ -245,7 +245,7 @@ pub fn setup_camera(
                 },
                 render_layer,
                 FinalCameraTag,
-            //    UiCameraConfig { show_ui: false },
+                UiCameraConfig { show_ui: false },
             ));
             commands.spawn((
                 Camera2dBundle {
