@@ -250,6 +250,13 @@ pub fn setup_camera(
             commands.spawn((
                 Camera2dBundle {
                     camera: Camera {
+                        viewport: Some(Viewport {
+                            physical_size: UVec2 {
+                                x: 1920,
+                                y: 1080,
+                            },
+                            ..Default::default()
+                        }),
                         // renders after the camera that draws the texture
                         order: 2,
                         ..default()

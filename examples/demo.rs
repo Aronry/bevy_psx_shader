@@ -75,6 +75,7 @@ fn setup(
         transform: Transform::from_translation(Vec3::new(0.0, 0.0, 10.0)),
         ..default()
     });
+
 }
 
 #[derive(Component)]
