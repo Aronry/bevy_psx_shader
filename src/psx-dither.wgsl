@@ -1,5 +1,9 @@
 #import bevy_sprite::mesh2d_view_bindings
 #import bevy_sprite::mesh2d_bindings
+#import bevy_sprite::{
+    mesh2d_view_bindings::globals,
+}
+
 
 struct PsxDitherMaterial {
     replace_color: vec3<f32>,
@@ -22,6 +26,30 @@ var dither_color_sampler: sampler;
 var lut_texture: texture_3d<f32>;
 @group(1) @binding(6)
 var lut_sampler: sampler;
+
+fn random (noise: vec2<f32>) -> f32
+{
+    //--- Noise: Low Static (X axis) ---
+    //return fract(sin(dot(noise.yx,vec2(0.000128,0.233)))*804818480.159265359);
+    
+    //--- Noise: Low Static (Y axis) ---
+    //return fract(sin(dot(noise.xy,vec2(0.000128,0.233)))*804818480.159265359);
+    
+  	//--- Noise: Low Static Scanlines (X axis) ---
+    //return fract(sin(dot(noise.xy,vec2(98.233,0.0001)))*925895933.14159265359);
+    
+   	//--- Noise: Low Static Scanlines (Y axis) ---
+    //return fract(sin(dot(noise.xy,vec2(0.0001,98.233)))*925895933.14159265359);
+    
+    //--- Noise: High Static Scanlines (X axis) ---
+    //return fract(sin(dot(noise.xy,vec2(0.0001,98.233)))*12073103.285);
+    
+    //--- Noise: High Static Scanlines (Y axis) ---
+    //return fract(sin(dot(noise.xy,vec2(98.233,0.0001)))*12073103.285);
+    
+    //--- Noise: Full Static ---
+    return fract(sin(dot(noise.xy,vec2(10.998,98.233)))*12433.14159265359);
+}
 
 struct FragmentInput {
     @location(0) c_position: vec4<f32>,
@@ -60,10 +88,25 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     }
  */
 
-    if fract(in.uv.y * 1080. / 4. / 2.) >= 0.5 {
-        final_col = final_col * 0.8;
-    }
+
+    //Noise stuff
+    var maxStrength = 0.5;
+    let minStrength = 0.125;
+
+    let speed = 10.00;
+
+    let iResolution = vec2(1920., 1080.) / 4.;
+
+    let uv = in.uv.xy;
+    let uv2 = fract(in.uv.xy*fract(sin(globals.time*speed)));
+    
+    //--- Strength animate ---
+    maxStrength = clamp(sin(globals.time/2.0),minStrength,maxStrength);
+    //-----------------------
+    
+    //--- Black and white ---
+    let colour = vec3(random(uv2.xy))*maxStrength;
 
 
-    return vec4(final_col, 1.0);
+    return vec4(final_col-colour, 1.0);
 }
