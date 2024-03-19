@@ -97,8 +97,8 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
     let iResolution = vec2(1920., 1080.) / 4.;
 
-    let uv = in.uv.xy;
-    let uv2 = fract(in.uv.xy*fract(sin(globals.time*speed)));
+    let uv = floor(in.uv.xy * iResolution) / iResolution;
+    let uv2 = fract(uv*fract(sin(globals.time*speed)));
     
     //--- Strength animate ---
     maxStrength = clamp(sin(globals.time/2.0),minStrength,maxStrength);
@@ -108,5 +108,5 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     let colour = vec3(random(uv2.xy))*maxStrength;
 
 
-    return vec4(final_col-colour, 1.0);
+    return vec4(final_col-colour*0.5, 1.0);
 }
