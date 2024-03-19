@@ -20,7 +20,14 @@ fn setup(
     mut materials: ResMut<Assets<PsxMaterial>>,
     asset_server: Res<AssetServer>,
 ) {
-    commands.spawn(PsxCamera::default());
+    commands.spawn(PsxCamera::new(
+        UVec2::new(1920 /4 , 1080 /4),
+        None,
+        Color::PURPLE,
+        false,
+        48.,
+        1
+    ));
     let transform =
     Transform::from_scale(Vec3::splat(0.20)).with_translation(Vec3::new(0.0, -3.5, -10.0));
     commands.spawn((
