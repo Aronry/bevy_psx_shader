@@ -90,7 +90,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
 
     //Noise stuff
-    var maxStrength = 0.05;
+    var maxStrength = 0.025;
     let minStrength = 0.125;
 
     let speed = 10.00;
