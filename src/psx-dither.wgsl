@@ -90,7 +90,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
 
     //Noise stuff
-    var maxStrength = 0.35;
+    var maxStrength = 0.05;
     let minStrength = 0.125;
 
     let speed = 10.00;
@@ -107,5 +107,5 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     //--- Black and white ---
     let colour = vec3(random(uv2.xy))*maxStrength;
 
-    return vec4(final_col*(vec3(1.)-colour), 1.0);
+    return vec4(final_col-colour, 1.0);
 }
