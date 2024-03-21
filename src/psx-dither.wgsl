@@ -83,7 +83,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
         final_col = round(base_col.rgb * material.dither_amount + dith * (0.0)) / material.dither_amount;
     }
 
-     if dot(raw_color, vec3(-1.,1.,-1.)) > 0.9 {
+     if dot(raw_color, vec3(-1.,1.,-1.)) > 0.5 {
         final_col = material.replace_color * (1. - in.uv.y);
     }
  
