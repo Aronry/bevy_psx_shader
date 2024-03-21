@@ -23,7 +23,7 @@ fn setup(
     commands.spawn(PsxCamera::new(
         UVec2::new(1920 /4 , 1080 /4),
         None,
-        Color::PURPLE,
+        Color::GREEN,
         false,
         48.,
         1
