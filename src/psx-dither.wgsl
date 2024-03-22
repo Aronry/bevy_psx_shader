@@ -67,7 +67,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     // the way the 3D texture is loaded will mean the
     // green and blue colors are swapped.
     // This mitigates that.
-    let raw_color = textureSample(base_color_texture, base_color_sampler, in.uv).rgb; //final_col.rbg;
+    let raw_color = textureSample(base_color_texture, base_color_sampler, in.uv).rgba; //final_col.rbg;
     let base_col = vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color.rbg + half_texel).rgb, 1.0);
 
  //   let base_col = textureSample(base_color_texture, base_color_sampler, in.uv);
@@ -83,7 +83,10 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
         final_col = round(base_col.rgb * material.dither_amount + dith * (0.0)) / material.dither_amount;
     }
 
-     if dot(raw_color, vec3(-1.,1.,-1.)) > 0.0 {
+/*      if dot(raw_color, vec3(-1.,1.,-1.)) > 0.0 {
+        final_col = material.replace_color * (1. - in.uv.y);
+    } */
+    if raw_color.a <= 0.1 {
         final_col = material.replace_color * (1. - in.uv.y);
     }
  
