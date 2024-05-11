@@ -20,6 +20,7 @@ bevy = { version = "0.12.1", default-features = false, features = [
     "bevy_pbr",
     "tonemapping_luts",
     "ktx2",
+    "png",
     "zstd",
     "multi-threaded",
 ] }
