@@ -73,8 +73,8 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
     var wave: Wave;
 
-    wave.waves_x = 1.;
-    wave.waves_y = 2.;
+    wave.waves_x = 0.;
+    wave.waves_y = 0.;
     wave.speed_x = 1.;
     wave.speed_y = 1.;
     wave.amplitude_x = 0.03;
