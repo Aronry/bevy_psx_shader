@@ -71,7 +71,7 @@ struct Wave {
 @fragment
 fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
-    var wave: Wave;
+/*     var wave: Wave;
 
     wave.waves_x = 0.;
     wave.waves_y = 0.;
@@ -89,7 +89,8 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     let offset_y = sin((pi_uv.x * wave.waves_y) + (pi_time * wave.speed_y)) * wave.amplitude_y;
 
     let uv_displaced = vec2<f32>(in.uv.x + offset_x, in.uv.y + offset_y);
-
+ */
+let uv_displaced = in.uv;
     let base_col = textureSample(base_color_texture, base_color_sampler, uv_displaced);
     let dith_size = vec2<f32>(textureDimensions(dither_color_texture));
     let buf_size = vec2<f32>(textureDimensions(base_color_texture));
