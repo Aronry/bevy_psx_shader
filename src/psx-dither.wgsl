@@ -90,7 +90,28 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
     let uv_displaced = vec2<f32>(in.uv.x + offset_x, in.uv.y + offset_y);
  */
+
 let uv_displaced = in.uv;
+
+    //Noise stuff
+    var maxStrength = 0.025;
+    let minStrength = 0.125;
+
+    let speed = 10.00;
+
+    let iResolution = vec2(1920., 1080.) / 4.;
+
+    let uv = floor(uv_displaced.xy * iResolution) / iResolution;
+    let uv2 = fract(uv*fract(sin(globals.time*speed)));
+    
+    //--- Strength animate ---
+//    maxStrength = clamp(sin(globals.time/2.0),minStrength,maxStrength);
+    //-----------------------
+    
+    //--- Black and white ---
+    let colour = vec3(random(uv2.xy))*maxStrength;
+
+
     let base_col = textureSample(base_color_texture, base_color_sampler, uv_displaced);
     let dith_size = vec2<f32>(textureDimensions(dither_color_texture));
     let buf_size = vec2<f32>(textureDimensions(base_color_texture));
@@ -112,23 +133,6 @@ let uv_displaced = in.uv;
     }
 
 
-    //Noise stuff
-    var maxStrength = 0.025;
-    let minStrength = 0.125;
-
-    let speed = 10.00;
-
-    let iResolution = vec2(1920., 1080.) / 4.;
-
-    let uv = floor(uv_displaced.xy * iResolution) / iResolution;
-    let uv2 = fract(uv*fract(sin(globals.time*speed)));
-    
-    //--- Strength animate ---
-//    maxStrength = clamp(sin(globals.time/2.0),minStrength,maxStrength);
-    //-----------------------
-    
-    //--- Black and white ---
-    let colour = vec3(random(uv2.xy))*maxStrength;
 
  
     let half_texel = vec3<f32>(1.0 / 64. / 2.);
@@ -139,7 +143,7 @@ let uv_displaced = in.uv;
     // the way the 3D texture is loaded will mean the
     // green and blue colors are swapped.
     // This mitigates that.
-    let raw_color = final_col.rbg - colour;
+    let raw_color = final_col.rbg - colour * 0.5;
     final_col = vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color + half_texel).rgb, 1.0).rgb;
 
 
