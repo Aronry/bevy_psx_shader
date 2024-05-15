@@ -110,18 +110,6 @@ let uv_displaced = in.uv;
     if base_col.a <= 0.1 {
         final_col = material.replace_color * (1. - uv_displaced.y);
     }
- 
-    let half_texel = vec3<f32>(1.0 / 64. / 2.);
-
-
-    // Notice the ".rbg".
-    // If we sample the LUT using ".rgb" instead,
-    // the way the 3D texture is loaded will mean the
-    // green and blue colors are swapped.
-    // This mitigates that.
-    let raw_color = final_col.rbg;
-    final_col = vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color + half_texel).rgb, 1.0).rgb;
-
 
 
     //Noise stuff
@@ -142,5 +130,19 @@ let uv_displaced = in.uv;
     //--- Black and white ---
     let colour = vec3(random(uv2.xy))*maxStrength;
 
-    return vec4(final_col-colour, 1.0);
+ 
+    let half_texel = vec3<f32>(1.0 / 64. / 2.);
+
+
+    // Notice the ".rbg".
+    // If we sample the LUT using ".rgb" instead,
+    // the way the 3D texture is loaded will mean the
+    // green and blue colors are swapped.
+    // This mitigates that.
+    let raw_color = final_col.rbg - colour;
+    final_col = vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color + half_texel).rgb, 1.0).rgb;
+
+
+
+    return vec4(final_col, 1.0);
 }
