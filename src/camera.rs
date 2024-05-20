@@ -26,6 +26,7 @@ pub struct PsxCamera {
     pub clear_color: Color,
     pub hdr: bool,
     pub dither_amount: f32,
+    pub fov: f32,
     pub banding_enabled: u32,
     init: bool,
 }
@@ -39,6 +40,7 @@ impl Default for PsxCamera {
             init: false,
             hdr: false,
             dither_amount: 48.0,
+            fov: 105.,
             banding_enabled: 1,
         }
     }
@@ -51,6 +53,7 @@ impl PsxCamera {
         clear_color: Color,
         hdr: bool,
         dither_amount: f32,
+        fov: f32,
         banding_enabled: u32,
     ) -> Self {
         Self {
@@ -60,6 +63,7 @@ impl PsxCamera {
             init: false,
             hdr,
             dither_amount,
+            fov,
             banding_enabled,
         }
     }
@@ -175,7 +179,7 @@ pub fn setup_camera(
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
-                        fov: 45. * PI / 180.,
+                        fov: pixel_camera.fov * PI / 180.,
                         ..default()
                     }),
                     ..Default::default()
@@ -191,7 +195,7 @@ pub fn setup_camera(
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
-                        fov: 45. * PI / 180.,
+                        fov: pixel_camera.fov * PI / 180.,
                         ..default()
                     }),
                     ..Default::default()

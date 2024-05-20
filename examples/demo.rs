@@ -26,6 +26,7 @@ fn setup(
         Color::rgba(0.,0.,0.,0.),
         false,
         48.,
+        45.,
         1
     ));
     let transform =
