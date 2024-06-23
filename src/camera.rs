@@ -65,6 +65,7 @@ impl PsxCamera {
             dither_amount,
             fov,
             banding_enabled,
+            ..default()
         }
     }
 
