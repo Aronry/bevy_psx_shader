@@ -146,12 +146,11 @@ let uv_displaced = in.uv;
     let raw_color = final_col.rbg - colour * 0.5;
     final_col = vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color + half_texel).rgb, 1.0).rgb;
 
-    let pixel_size_y = 1.0 / 1920. * 3.;
-    let pixel_size_x = 1.0 / 1080. * 3.;
+    let pixel_size_y = 1.0 / 1920. * 1.;
+    let pixel_size_x = 1.0 / 1080. * 1.;
 
     var current_color = final_col;
     var color_left = textureSample(base_color_texture, base_color_sampler, uv_displaced - vec2(pixel_size_x, pixel_size_y)).rgb;
-    color_left = vec4<f32>(textureSample(lut_texture, lut_sampler, color_left + half_texel).rgb, 1.0).rgb;
 
     current_color = current_color * vec3(1.2, 0.5, 1.0 - 1.2);
     color_left = color_left * vec3(1. - 1.2, 0.5, 1.2);
