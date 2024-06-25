@@ -117,13 +117,13 @@ let uv_displaced = in.uv;
     let pixel_size_y = 1.0 / 1920. * 3.;
     let pixel_size_x = 1.0 / 1080. * 3.;
 
-    var current_color = base_col.rgb;
-    var color_left = textureSample(base_color_texture, base_color_sampler, uv_displaced - vec2(pixel_size_x, pixel_size_y)).rgb;
+    var current_color = base_col;
+    var color_left = textureSample(base_color_texture, base_color_sampler, uv_displaced - vec2(pixel_size_x, pixel_size_y));
 
-    current_color = current_color * vec3(1.2, 0.5, 1.0 - 1.2);
-    color_left = color_left * vec3(1. - 1.2, 0.5, 1.2);
+    current_color = current_color * vec4(1.2, 0.5, 1.0 - 1.2, 1.);
+    color_left = color_left * vec4(1. - 1.2, 0.5, 1.2, 1.);
 
-    base_col = vec4(current_color + color_left, base_col.a);
+    base_col = current_color + color_left;
     
     let dith_size = vec2<f32>(textureDimensions(dither_color_texture));
     let buf_size = vec2<f32>(textureDimensions(base_color_texture));
