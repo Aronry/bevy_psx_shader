@@ -158,5 +158,5 @@ let uv_displaced = in.uv;
     let raw_color = final_col.rbg - colour * 0.5;
     final_col = vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color + half_texel).rgb, 1.0).rgb;
 
-    return vec4(final_col * (sin(globals.time * 10.) * 0.5 + 0.5 + 1.), 1.0);
+    return vec4(final_col * ((sin(globals.time * 10.) * 0.5 + 0.5) * 15. + 1.), 1.0);
 }
