@@ -7,6 +7,7 @@
 
 struct PsxDitherMaterial {
     replace_color: vec3<f32>,
+    mult_color: vec3<f32>,
     dither_amount: f32,
     banding_enabled: u32,
     time: f32,
@@ -145,7 +146,7 @@ let uv_displaced = in.uv;
         final_col = material.replace_color * (1. - uv_displaced.y);
     }
 
-    final_col = final_col *  vec4(((sin(globals.time * 10.) * 0.5 + 0.5) * 15. + 1.), 1., 1., 1.).rgb;
+    final_col = final_col * material.mult_color;
 
  
     let half_texel = vec3<f32>(1.0 / 64. / 2.);
