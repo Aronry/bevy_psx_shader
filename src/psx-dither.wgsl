@@ -124,7 +124,7 @@ let uv_displaced = in.uv;
     color_left = color_left * vec4(1. - 1.2, 0.5, 1.2, 1.);
 
     base_col = current_color + color_left;
-    base_col = base_col  * vec4(((sin(globals.time * 10.) * 0.5 + 0.5) * 15. + 1.), 1., 1., 1.);
+    base_col = base_col;
 
     let dith_size = vec2<f32>(textureDimensions(dither_color_texture));
     let buf_size = vec2<f32>(textureDimensions(base_color_texture));
@@ -145,7 +145,7 @@ let uv_displaced = in.uv;
         final_col = material.replace_color * (1. - uv_displaced.y);
     }
 
-
+    final_col = final_col *  vec4(((sin(globals.time * 10.) * 0.5 + 0.5) * 15. + 1.), 1., 1., 1.).rgb;
 
  
     let half_texel = vec3<f32>(1.0 / 64. / 2.);
