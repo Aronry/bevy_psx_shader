@@ -1,7 +1,7 @@
 use std::f32::consts::PI;
 
 use bevy::{
-    core_pipeline::clear_color::ClearColorConfig,
+//    core_pipeline::clear_color::ClearColorConfig,
     prelude::*,
     render::{
         camera::{RenderTarget, Viewport},
@@ -176,7 +176,7 @@ pub fn setup_camera(
                         ..default()
                     },
                     camera_3d: Camera3d {
-                        clear_color: ClearColorConfig::Custom(pixel_camera.clear_color),
+                    //    clear_color: ClearColorConfig::Custom(pixel_camera.clear_color),
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
@@ -192,7 +192,7 @@ pub fn setup_camera(
                         ..default()
                     },
                     camera_3d: Camera3d {
-                        clear_color: ClearColorConfig::Custom(pixel_camera.clear_color),
+                    //    clear_color: ClearColorConfig::Custom(pixel_camera.clear_color),
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
@@ -205,7 +205,8 @@ pub fn setup_camera(
 
             commands
                 .entity(entity)
-                .insert((UiCameraConfig { show_ui: false }, camera));
+             //   .insert((UiCameraConfig { show_ui: false }, camera));
+                .insert((Visibility::Hidden, camera));
 
 
             let render_layer = RenderLayers::layer((RenderLayers::TOTAL_LAYERS - 1) as u8);
@@ -250,25 +251,17 @@ pub fn setup_camera(
                 },
                 render_layer,
                 FinalCameraTag,
-                UiCameraConfig { show_ui: false },
+            //    UiCameraConfig { show_ui: false },
             ));
             commands.spawn((
                 Camera2dBundle {
                     camera: Camera {
-                        viewport: Some(Viewport {
-                            physical_size: UVec2 {
-                                x: 1920,
-                                y: 1080,
-                            },
-                            ..Default::default()
-                        }),
+
                         // renders after the camera that draws the texture
                         order: 2,
                         ..default()
                     },
-                    camera_2d: Camera2d {
-                        clear_color: ClearColorConfig::None,
-                    },
+                    camera_2d: Camera2d {},
                     ..Default::default()
                 },
                 ui_layer,

@@ -13,19 +13,19 @@ struct PsxDitherMaterial {
     time: f32,
 };
 
-@group(1) @binding(0)
+@group(2) @binding(0)
 var<uniform> material: PsxDitherMaterial;
-@group(1) @binding(1)
+@group(2) @binding(1)
 var base_color_texture: texture_2d<f32>;
-@group(1) @binding(2)
+@group(2) @binding(2)
 var base_color_sampler: sampler;
-@group(1) @binding(3)
+@group(2) @binding(3)
 var dither_color_texture: texture_2d<f32>;
-@group(1) @binding(4)
+@group(2) @binding(4)
 var dither_color_sampler: sampler;
-@group(1) @binding(5)
+@group(2) @binding(5)
 var lut_texture: texture_3d<f32>;
-@group(1) @binding(6)
+@group(2) @binding(6)
 var lut_sampler: sampler;
 
 fn random (noise: vec2<f32>) -> f32

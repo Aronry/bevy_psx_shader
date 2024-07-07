@@ -7,6 +7,8 @@ use bevy::{
     asset::{load_internal_asset, load_internal_binary_asset},
     prelude::*,
     render::{
+        
+        render_asset::RenderAssetUsages,
         camera::ScalingMode,
         texture::{CompressedImageFormats, ImageSampler, ImageType},
         view::VisibleEntities,
@@ -25,6 +27,8 @@ pub fn image_load(bytes: &[u8],_unused: String) -> Image {
         CompressedImageFormats::NONE,
         true,
         ImageSampler::nearest(),
+        
+        RenderAssetUsages::default(),
     )
     .unwrap();
     image
