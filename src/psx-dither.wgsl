@@ -10,7 +10,6 @@ struct PsxDitherMaterial {
     mult_color: vec3<f32>,
     dither_amount: f32,
     banding_enabled: u32,
-    time: f32,
 };
 
 @group(2) @binding(0)

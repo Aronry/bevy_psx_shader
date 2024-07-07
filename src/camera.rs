@@ -1,5 +1,7 @@
 // use std::f32::consts::PI;
 
+use std::f32::consts::PI;
+
 use bevy::{
     prelude::*,
     render::{
@@ -176,7 +178,7 @@ pub fn setup_camera(
                         ..default()
                     },
                     camera_3d: Camera3d {
-                        clear_color: ClearColorConfig::Custom(pixel_camera.clear_color),
+                    //    clear_color: ClearColorConfig::Custom(pixel_camera.clear_color),
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
@@ -189,7 +191,7 @@ pub fn setup_camera(
                 Camera3dBundle {
                     camera: Camera {
                         target: RenderTarget::Image(image_handle.clone()),
-                        clear_color: ClearColorConfig::Custom(pixel_camera.clear_color),
+                    //    clear_color: ClearColorConfig::Custom(pixel_camera.clear_color),
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {

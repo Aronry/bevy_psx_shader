@@ -10,7 +10,6 @@ use bevy::{
         
         render_asset::RenderAssetUsages,
         camera::ScalingMode,
-        render_asset::RenderAssetUsages,
         texture::{CompressedImageFormats, ImageSampler, ImageType},
         view::VisibleEntities,
     },
@@ -26,7 +25,7 @@ pub fn image_load(bytes: &[u8], _unused: String) -> Image {
         bytes,
         ImageType::Extension("png"),
         CompressedImageFormats::NONE,
-        true,
+        false,
         ImageSampler::nearest(),
         RenderAssetUsages::default(),
     )
@@ -48,7 +47,7 @@ impl Plugin for PsxPlugin {
             .register_type::<VisibleEntities>()
             .register_type::<ScalingMode>()
             .register_type::<Aabb>()
-            .add_systems(PostUpdate, camera::setup_camera)
+            .add_systems(PreUpdate, camera::setup_camera)
             .add_systems(Update,camera::scale_render_image);
 
 

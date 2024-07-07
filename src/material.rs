@@ -85,8 +85,6 @@ pub struct PsxDitherMaterial {
     pub dither_amount: f32,
     #[uniform(0)]
     pub banding_enabled: u32,
-    #[uniform(0)]
-    pub lut_mix: f32,
 
     #[texture(1)]
     #[sampler(2)]
@@ -113,7 +111,6 @@ impl Default for PsxDitherMaterial {
             banding_enabled: 1,
             color_texture: None,
             lut_texture: Some(PSX_LUT_HANDLE),
-            lut_mix: 0.,
         }
     }
 }
