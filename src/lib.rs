@@ -10,6 +10,7 @@ use bevy::{
         
         render_asset::RenderAssetUsages,
         camera::ScalingMode,
+        render_asset::RenderAssetUsages,
         texture::{CompressedImageFormats, ImageSampler, ImageType},
         view::VisibleEntities,
     },
@@ -20,14 +21,13 @@ use crate::material::{
     PSX_FRAG_SHADER_HANDLE, PSX_VERT_SHADER_HANDLE, PSX_LUT_HANDLE
 };
 
-pub fn image_load(bytes: &[u8],_unused: String) -> Image {
+pub fn image_load(bytes: &[u8], _unused: String) -> Image {
     let image = Image::from_buffer(
         bytes,
         ImageType::Extension("png"),
         CompressedImageFormats::NONE,
         true,
         ImageSampler::nearest(),
-        
         RenderAssetUsages::default(),
     )
     .unwrap();
@@ -48,10 +48,8 @@ impl Plugin for PsxPlugin {
             .register_type::<VisibleEntities>()
             .register_type::<ScalingMode>()
             .register_type::<Aabb>()
-//            .add_systems(PostUpdate, camera::setup_camera)
-            .add_systems(PreUpdate, camera::setup_camera)
+            .add_systems(PostUpdate, camera::setup_camera)
             .add_systems(Update,camera::scale_render_image);
-        //    .add_systems(PostUpdate,material::adapt_image_for_lut_use);
 
 
         load_internal_binary_asset!(app, PSX_DITHER_HANDLE, "psx-dith.png", image_load);
@@ -77,7 +75,7 @@ impl Plugin for PsxPlugin {
             app,
             PSX_VERT_SHADER_HANDLE,
             "psx-vert.wgsl",
-// https://bevyengine.org/learn/migration-guides/0.11-0.12/#pbr-shader-cleanup
+            // https://bevyengine.org/learn/migration-guides/0.11-0.12/#pbr-shader-cleanup
             Shader::from_wgsl
         );
     }
