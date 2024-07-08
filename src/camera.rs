@@ -5,7 +5,7 @@ use std::f32::consts::PI;
 use bevy::{
     prelude::*,
     render::{
-        camera::{RenderTarget, Viewport}, render_asset::RenderAssetUsages, render_resource::{
+        camera::{Exposure, RenderTarget, Viewport}, render_asset::RenderAssetUsages, render_resource::{
             Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages,
         }, texture::{BevyDefault, ImageSampler}, view::RenderLayers
     },
@@ -182,6 +182,7 @@ pub fn setup_camera(
                         fov: pixel_camera.fov * PI / 180.,
                         ..default()
                     }),
+                    exposure: Exposure::INDOOR,
                     ..Default::default()
                 }
             } else {
@@ -195,6 +196,7 @@ pub fn setup_camera(
                         fov: pixel_camera.fov * PI / 180.,
                         ..default()
                     }),
+                    exposure: Exposure::INDOOR,
                     ..Default::default()
                 }
             };

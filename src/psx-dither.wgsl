@@ -101,7 +101,7 @@ let uv_displaced = in.uv;
 
     let speed = 10.00;
 
-    let iResolution = vec2<f32>(textureDimensions(base_color_texture));
+    let iResolution = vec2<f32>(textureDimensions(base_color_texture)) * 4.;
 
     let uv = floor(uv_displaced.xy * iResolution) / iResolution;
     let uv2 = fract(uv*fract(sin(globals.time*speed)));
@@ -149,7 +149,7 @@ let uv_displaced = in.uv;
 
     final_col = final_col * material.mult_color;
 
-
+/* 
 
     let screen_size = vec2i(textureDimensions(base_color_texture));
     let threshold_map_size = vec2i(textureDimensions(dither_color_texture));
@@ -164,7 +164,7 @@ let uv_displaced = in.uv;
 
     final_col =  vec4f(value, value, value, 1.0).rgb;
 
-
+ */
 
     let half_texel = vec3<f32>(1.0 / 64. / 2.);
 
