@@ -101,7 +101,7 @@ let uv_displaced = in.uv;
 
     let speed = 10.00;
 
-    let iResolution = vec2(1920., 1080.) / 4.;
+    let iResolution = vec2<f32>(textureDimensions(base_color_texture));
 
     let uv = floor(uv_displaced.xy * iResolution) / iResolution;
     let uv2 = fract(uv*fract(sin(globals.time*speed)));
@@ -116,8 +116,8 @@ let uv_displaced = in.uv;
 
     var base_col = textureSample(base_color_texture, base_color_sampler, uv_displaced);
 
-    let pixel_size_y = 1.0 / 1920. * 3.;
-    let pixel_size_x = 1.0 / 1080. * 3.;
+    let pixel_size_y = 1.0 / iResolution.x * 3.;
+    let pixel_size_x = 1.0 / iResolution.y * 3.;
 
     var current_color = base_col;
     var color_left = textureSample(base_color_texture, base_color_sampler, uv_displaced - vec2(pixel_size_x, pixel_size_y));

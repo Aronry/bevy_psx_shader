@@ -38,7 +38,7 @@ impl Default for PsxCamera {
             init: false,
             hdr: false,
             dither_amount: 8.0,
-            fov: 42.,
+            fov: 105.,
             banding_enabled: 1,
         }
     }
@@ -179,7 +179,7 @@ pub fn setup_camera(
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
-                        fov: 42. * PI / 180.,
+                        fov: pixel_camera.fov * PI / 180.,
                         ..default()
                     }),
                     ..Default::default()
@@ -192,7 +192,7 @@ pub fn setup_camera(
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
-                        fov: 42. * PI / 180.,
+                        fov: pixel_camera.fov * PI / 180.,
                         ..default()
                     }),
                     ..Default::default()
