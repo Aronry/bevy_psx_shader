@@ -5,12 +5,9 @@ use std::f32::consts::PI;
 use bevy::{
     prelude::*,
     render::{
-        camera::{RenderTarget, Viewport},
-        render_resource::{
+        camera::{RenderTarget, Viewport}, render_asset::RenderAssetUsages, render_resource::{
             Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages,
-        },
-        texture::{BevyDefault, ImageSampler},
-        view::RenderLayers,
+        }, texture::{BevyDefault, ImageSampler}, view::RenderLayers
     },
     sprite::MaterialMesh2dBundle,
     window::PrimaryWindow,
@@ -40,8 +37,8 @@ impl Default for PsxCamera {
             clear_color: Color::WHITE,
             init: false,
             hdr: false,
-            dither_amount: 48.0,
-            fov: 105.,
+            dither_amount: 8.0,
+            fov: 42.,
             banding_enabled: 1,
         }
     }
@@ -173,7 +170,7 @@ pub fn setup_camera(
                 Camera3dBundle {
                     camera: Camera {
                         target: RenderTarget::Image(image_handle.clone()),
-                        clear_color: ClearColorConfig::Custom(pixel_camera.clear_color),
+                        clear_color: ClearColorConfig::Custom(Color::rgba(1.,0.,0.,0.)),
                         hdr: true,
                         ..default()
                     },
@@ -182,7 +179,7 @@ pub fn setup_camera(
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
-                        fov: 105. * PI / 180.,
+                        fov: 42. * PI / 180.,
                         ..default()
                     }),
                     ..Default::default()
@@ -191,11 +188,11 @@ pub fn setup_camera(
                 Camera3dBundle {
                     camera: Camera {
                         target: RenderTarget::Image(image_handle.clone()),
-                    //    clear_color: ClearColorConfig::Custom(pixel_camera.clear_color),
+                        clear_color: ClearColorConfig::Custom(Color::rgba(1.,0.,0.,0.)),
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
-                        fov: 105. * PI / 180.,
+                        fov: 42. * PI / 180.,
                         ..default()
                     }),
                     ..Default::default()
@@ -215,6 +212,55 @@ pub fn setup_camera(
                 size.height as f32,
             ))));
 
+
+            //dithering
+            let level = 3;
+            let power = level + 1;
+            let map_size: u32 = 1 << power;
+            let mut buffer = Vec::<u8>::new();
+
+            for row in 0..map_size {
+                for col in 0..map_size {
+                    let a = row ^ col;
+                    // Interleave bits of `a` with bits of y coordinate in reverse order
+                    let mut result: u64 = 0;
+                    let mut bit = 0;
+                    let mut mask = power as i32 - 1;
+                    loop {
+                        if bit >= 2 * power {
+                            break;
+                        }
+                        result |= (((col >> mask) & 1) << bit) as u64;
+                        bit += 1;
+                        result |= (((a >> mask) & 1) << bit) as u64;
+                        bit += 1;
+                        mask -= 1;
+                    }
+                    let value = ((result as f32 / map_size.pow(2) as f32) * 255.0) as u8;
+                    buffer.push(value);
+                }
+            }
+
+            let mut image = Image::new(
+                Extent3d {
+                    width: map_size,
+                    height: map_size,
+                    depth_or_array_layers: 1,
+                },
+                TextureDimension::D2,
+                buffer,
+                TextureFormat::R8Unorm,
+                RenderAssetUsages::RENDER_WORLD,
+            );
+            image.texture_descriptor.usage = TextureUsages::COPY_DST
+                | TextureUsages::STORAGE_BINDING
+                | TextureUsages::TEXTURE_BINDING;
+
+            let dither_handle = images.add(image);
+
+
+
+
             commands.spawn((
                 MaterialMesh2dBundle {
                     mesh: quad_handle.into(),
@@ -222,6 +268,7 @@ pub fn setup_camera(
                         dither_amount: pixel_camera.dither_amount,
                         banding_enabled: pixel_camera.banding_enabled,
                         color_texture: Some(image_handle),
+                        dither_color_texture: Some(dither_handle),
                         ..Default::default()
                     }),
                     transform: Transform { ..default() },

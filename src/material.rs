@@ -104,9 +104,9 @@ pub struct PsxDitherMaterial {
 impl Default for PsxDitherMaterial {
     fn default() -> Self {
         Self {
-            replace_color: Vec3::ZERO,
+            replace_color: Vec3::new(0.9,0.3,0.8),
             mult_color: Vec3::ONE,
-            dither_amount: 48.0,
+            dither_amount: 8.0,
             dither_color_texture: Some(PSX_DITHER_HANDLE),
             banding_enabled: 1,
             color_texture: None,

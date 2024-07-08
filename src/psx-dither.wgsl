@@ -12,6 +12,8 @@ struct PsxDitherMaterial {
     banding_enabled: u32,
 };
 
+
+
 @group(2) @binding(0)
 var<uniform> material: PsxDitherMaterial;
 @group(2) @binding(1)
@@ -147,7 +149,23 @@ let uv_displaced = in.uv;
 
     final_col = final_col * material.mult_color;
 
- 
+
+
+    let screen_size = vec2i(textureDimensions(base_color_texture));
+    let threshold_map_size = vec2i(textureDimensions(dither_color_texture));
+    let pixel_position = vec2i(floor(in.uv * vec2f(screen_size)));
+    let map_position = vec2f(pixel_position % threshold_map_size) / vec2f(threshold_map_size);
+
+    let threshold = textureSample(dither_color_texture, dither_color_sampler, map_position).r;
+
+    let base_color = final_col - colour * 0.5;
+    let luma = (0.2126 * base_color.r + 0.7152 * base_color.g + 0.0722 * base_color.b);
+    let value = f32(luma >= threshold);
+
+    final_col =  vec4f(value, value, value, 1.0).rgb;
+
+
+
     let half_texel = vec3<f32>(1.0 / 64. / 2.);
 
 
@@ -156,7 +174,7 @@ let uv_displaced = in.uv;
     // the way the 3D texture is loaded will mean the
     // green and blue colors are swapped.
     // This mitigates that.
-    let raw_color = final_col.rbg - colour * 0.5;
+    let raw_color = final_col.rbg;// - colour * 0.5;
     final_col = vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color + half_texel).rgb, 1.0).rgb;
 
     return vec4(final_col, 1.0);
