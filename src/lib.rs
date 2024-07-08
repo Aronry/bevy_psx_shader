@@ -25,7 +25,7 @@ pub fn image_load(bytes: &[u8], _unused: String) -> Image {
         bytes,
         ImageType::Extension("png"),
         CompressedImageFormats::NONE,
-        false,
+        true,
         ImageSampler::nearest(),
         RenderAssetUsages::default(),
     )

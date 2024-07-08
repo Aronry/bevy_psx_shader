@@ -182,7 +182,6 @@ pub fn setup_camera(
                         fov: pixel_camera.fov * PI / 180.,
                         ..default()
                     }),
-                    exposure: Exposure::INDOOR,
                     ..Default::default()
                 }
             } else {
@@ -196,7 +195,6 @@ pub fn setup_camera(
                         fov: pixel_camera.fov * PI / 180.,
                         ..default()
                     }),
-                    exposure: Exposure::INDOOR,
                     ..Default::default()
                 }
             };
