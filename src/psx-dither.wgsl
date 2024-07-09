@@ -132,12 +132,28 @@ let uv_displaced = in.uv;
     let buf_size = vec2<f32>(textureDimensions(base_color_texture));
     let dith = textureSample(dither_color_texture, dither_color_sampler, uv_displaced * (buf_size / dith_size)).rgb - 0.5;
     var final_col = vec3(0.0, 0.0, 0.0);
+
+
+    let screen_size = vec2i(textureDimensions(base_color_texture));
+    let threshold_map_size = vec2i(textureDimensions(dither_color_texture));
+    let pixel_position = vec2i(floor(in.uv * vec2f(screen_size)));
+    let map_position = vec2f(pixel_position % threshold_map_size) / vec2f(threshold_map_size);
+
+    let threshold = textureSample(dither_color_texture, dither_color_sampler, map_position).r;
+
+    let base_color = base_col.rgb; // - colour * 0.5;
+    let luma = (0.2126 * base_color.r + 0.7152 * base_color.g + 0.0722 * base_color.b);
+    let value = f32(luma >= threshold);
+
+
+
+
     if material.banding_enabled > 0u {
     //    final_col = round(base_col.rgb * material.dither_amount + dith * (1.0)) / material.dither_amount;
         
-        final_col = round(base_col.rgb * material.dither_amount + dith * (1.0)) / material.dither_amount;
+        final_col = round(base_col.rgb * material.dither_amount + value - 0.5 * (1.0)) / material.dither_amount;
     } else {
-        final_col = round(base_col.rgb * material.dither_amount + dith * (0.0)) / material.dither_amount;
+        final_col = round(base_col.rgb * material.dither_amount + value - 0.5 * (1.0)) / material.dither_amount;
     }
 
 /*      if dot(raw_color, vec3(-1.,1.,-1.)) > 0.0 {
@@ -149,22 +165,9 @@ let uv_displaced = in.uv;
 
     final_col = final_col * material.mult_color;
 
-/* 
 
-    let screen_size = vec2i(textureDimensions(base_color_texture));
-    let threshold_map_size = vec2i(textureDimensions(dither_color_texture));
-    let pixel_position = vec2i(floor(in.uv * vec2f(screen_size)));
-    let map_position = vec2f(pixel_position % threshold_map_size) / vec2f(threshold_map_size);
 
-    let threshold = textureSample(dither_color_texture, dither_color_sampler, map_position).r;
 
-    let base_color = final_col - colour * 0.5;
-    let luma = (0.2126 * base_color.r + 0.7152 * base_color.g + 0.0722 * base_color.b);
-    let value = f32(luma >= threshold);
-
-    final_col =  vec4f(value, value, value, 1.0).rgb;
-
- */
 
     let half_texel = vec3<f32>(1.0 / 64. / 2.);
 

@@ -5,7 +5,7 @@ use std::f32::consts::PI;
 use bevy::{
     prelude::*,
     render::{
-        camera::{Exposure, RenderTarget, Viewport}, render_asset::RenderAssetUsages, render_resource::{
+        camera::{Exposure, PhysicalCameraParameters, RenderTarget, Viewport}, render_asset::RenderAssetUsages, render_resource::{
             Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages,
         }, texture::{BevyDefault, ImageSampler}, view::RenderLayers
     },
@@ -170,7 +170,7 @@ pub fn setup_camera(
                 Camera3dBundle {
                     camera: Camera {
                         target: RenderTarget::Image(image_handle.clone()),
-                        clear_color: ClearColorConfig::Custom(Color::rgba(1.,0.,0.,0.)),
+                        clear_color: ClearColorConfig::Custom(Color::rgba(0.,0.,0.,0.)),
                         hdr: true,
                         ..default()
                     },
@@ -194,6 +194,11 @@ pub fn setup_camera(
                     projection: Projection::Perspective(PerspectiveProjection {
                         fov: pixel_camera.fov * PI / 180.,
                         ..default()
+                    }),
+                    exposure: Exposure::from_physical_camera(PhysicalCameraParameters {
+                        aperture_f_stops: 1.0,
+                        shutter_speed_s: 1. / 31.,
+                        sensitivity_iso: 500.,
                     }),
                     ..Default::default()
                 }

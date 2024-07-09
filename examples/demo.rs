@@ -18,6 +18,7 @@ fn setup(
     mut commands: Commands,
     _meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<PsxMaterial>>,
+    mut smaterials: ResMut<Assets<StandardMaterial>>,
     asset_server: Res<AssetServer>,
 ) {
     commands.spawn(PsxCamera::new(
@@ -31,7 +32,7 @@ fn setup(
     ));
     let transform =
     Transform::from_scale(Vec3::splat(0.20)).with_translation(Vec3::new(0.0, -3.5, -10.0));
-    commands.spawn((
+/*     commands.spawn((
         MaterialMeshBundle {
             mesh: asset_server.load("dvaBlender.glb#Mesh2/Primitive0"),
             material: materials.add(PsxMaterial {
@@ -72,6 +73,44 @@ fn setup(
                 snap_amount: 10.0,  
                 fog_distance: Vec2::new(250.0, 750.0), 
                 
+                ..Default::default()
+            }),
+            transform,
+            ..default()
+        },
+        Rotates,
+    )); */
+
+    commands.spawn((
+        MaterialMeshBundle {
+            mesh: asset_server.load("dvaBlender.glb#Mesh2/Primitive0"),
+            material: smaterials.add(StandardMaterial {
+                base_color_texture: Some(asset_server.load("dvaBlender.glb#Texture0")),
+                ..Default::default()
+            }),
+            transform,
+            ..default()
+        },
+        Rotates,
+    ));
+    commands.spawn((
+        MaterialMeshBundle {
+            mesh: asset_server.load("dvaBlender.glb#Mesh0/Primitive0"),
+            material: smaterials.add(StandardMaterial {
+                base_color_texture: Some(asset_server.load("dvaBlender.glb#Texture0")),
+                ..Default::default()
+            }),
+            transform,
+            ..default()
+        },
+        Rotates,
+    ));
+    commands.spawn((
+        MaterialMeshBundle {
+            //import from gltf dvaBlender.glb
+            mesh: asset_server.load("dvaBlender.glb#Mesh1/Primitive0"),
+            material: smaterials.add(StandardMaterial {
+                base_color_texture: Some(asset_server.load("dvaBlender.glb#Texture0")),
                 ..Default::default()
             }),
             transform,
