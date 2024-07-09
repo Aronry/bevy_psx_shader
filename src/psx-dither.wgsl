@@ -151,9 +151,9 @@ let uv_displaced = in.uv;
     if material.banding_enabled > 0u {
     //    final_col = round(base_col.rgb * material.dither_amount + dith * (1.0)) / material.dither_amount;
         
-        final_col = round(base_col.rgb * material.dither_amount + value - 0.5 * (1.0)) / material.dither_amount;
+        final_col = round(base_col.rgb * material.dither_amount + (value - 0.5) * (1.0)) / material.dither_amount;
     } else {
-        final_col = round(base_col.rgb * material.dither_amount + value - 0.5 * (1.0)) / material.dither_amount;
+        final_col = round(base_col.rgb * material.dither_amount + (value - 0.5) * (1.0)) / material.dither_amount;
     }
 
 /*      if dot(raw_color, vec3(-1.,1.,-1.)) > 0.0 {
