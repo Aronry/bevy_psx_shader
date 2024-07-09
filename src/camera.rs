@@ -182,13 +182,18 @@ pub fn setup_camera(
                         fov: pixel_camera.fov * PI / 180.,
                         ..default()
                     }),
+                    exposure: Exposure::from_physical_camera(PhysicalCameraParameters {
+                        aperture_f_stops: 1.0,
+                        shutter_speed_s: 1. / 31.,
+                        sensitivity_iso: 500.,
+                    }),
                     ..Default::default()
                 }
             } else {
                 Camera3dBundle {
                     camera: Camera {
                         target: RenderTarget::Image(image_handle.clone()),
-                        clear_color: ClearColorConfig::Custom(Color::rgba(1.,0.,0.,0.)),
+                        clear_color: ClearColorConfig::Custom(Color::rgba(0.,0.,0.,0.)),
                         ..default()
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
