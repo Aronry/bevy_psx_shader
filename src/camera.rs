@@ -229,7 +229,7 @@ pub fn setup_camera(
 
 
             //dithering
-            let level = 8;
+            let level = 3;
             let power = level + 1;
             let map_size: u32 = 1 << power;
             let mut buffer = Vec::<u8>::new();
