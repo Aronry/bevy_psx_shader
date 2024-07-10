@@ -7,7 +7,7 @@ use bevy::{
     render::{
         camera::{Exposure, PhysicalCameraParameters, RenderTarget, Viewport}, render_asset::RenderAssetUsages, render_resource::{
             Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages,
-        }, texture::{BevyDefault, ImageSampler}, view::RenderLayers
+        }, texture::{BevyDefault, ImageAddressMode, ImageSampler, ImageSamplerDescriptor}, view::RenderLayers
     },
     sprite::MaterialMesh2dBundle,
     window::PrimaryWindow,
@@ -229,7 +229,7 @@ pub fn setup_camera(
 
 
             //dithering
-            let level = 3;
+            let level = 8;
             let power = level + 1;
             let map_size: u32 = 1 << power;
             let mut buffer = Vec::<u8>::new();
@@ -270,6 +270,11 @@ pub fn setup_camera(
             image.texture_descriptor.usage = TextureUsages::COPY_DST
                 | TextureUsages::STORAGE_BINDING
                 | TextureUsages::TEXTURE_BINDING;
+            let mut desc = ImageSamplerDescriptor::nearest();
+            desc.address_mode_u = ImageAddressMode::Repeat;
+            desc.address_mode_v = ImageAddressMode::Repeat;
+            desc.address_mode_w = ImageAddressMode::Repeat;
+            image.sampler = ImageSampler::Descriptor(desc);
 
             let dither_handle = images.add(image);
 

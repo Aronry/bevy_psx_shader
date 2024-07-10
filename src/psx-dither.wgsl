@@ -53,6 +53,61 @@ fn random (noise: vec2<f32>) -> f32
     return fract(sin(dot(noise.xy,vec2(10.998,98.233)))*12433.14159265359);
 }
 
+
+fn channelError(col: f32, colMin: f32, colMax: f32) -> f32 {
+	let range: f32 = abs(colMin - colMax);
+	let aRange: f32 = abs(col - colMin);
+	return aRange / range;
+} 
+
+fn ditheredChannel(error: f32, ditherBlockUV: vec2<f32>) -> f32 {
+	let pattern: f32 = textureSample(dither_color_texture, dither_color_sampler, ditherBlockUV).r;
+	if (error > pattern) {
+		return 1.;
+	} else { 
+		return 0.;
+	}
+} 
+/* 
+fn mix(a: vec4<f32>, b: vec4<f32>, amt: f32) -> vec4<f32> {
+	return (1. - amt) * a + b * amt;
+}  */
+
+fn RGBtoYUV(rgb: vec3<f32>) -> vec3<f32> {
+	var yuv: vec3<f32>;
+	yuv.r = rgb.r * 0.2126 + 0.7152 * rgb.g + 0.0722 * rgb.b;
+	yuv.g = (rgb.b - yuv.r) / 1.8556;
+	yuv.b = (rgb.r - yuv.r) / 1.5748;
+	var yuvgb = yuv.gb;
+	yuvgb = yuv.gb + (0.5);
+	yuv.g = yuvgb.x;
+	yuv.b = yuvgb.y;
+	return yuv;
+} 
+
+fn YUVtoRGB(inyuv: vec3<f32>) -> vec3<f32> {
+/* 	var yuvgb = yuv.gb;
+	yuvgb = yuv.gb - (0.5);
+	yuv.g = yuvgb.x;
+	yuv.b = yuvgb.y; */
+    var yuv = inyuv;
+    yuv.g -= 0.5;
+    yuv.b -= 0.5;
+	return vec3<f32>(yuv.r * 1. + yuv.g * 0. + yuv.b * 1.5748, yuv.r * 1. + yuv.g * -0.187324 + yuv.b * -0.468124, yuv.r * 1. + yuv.g * 1.8556 + yuv.b * 0.);
+} 
+
+fn ditherColor(col: vec3<f32>, uv: vec2<f32>, xres: f32, yres: f32) -> vec3<f32> {
+	var yuv: vec3<f32> = RGBtoYUV(col);
+	let col1: vec3<f32> = floor(yuv * material.dither_amount) / material.dither_amount;
+	let col2: vec3<f32> = ceil(yuv * material.dither_amount) / material.dither_amount;
+	let ditherBlockUV: vec2<f32> = uv * vec2<f32>(xres / 8., yres / 8.);
+	yuv.x = mix(col1.x, col2.x, ditheredChannel(channelError(yuv.x, col1.x, col2.x), ditherBlockUV));
+	yuv.y = mix(col1.y, col2.y, ditheredChannel(channelError(yuv.y, col1.y, col2.y), ditherBlockUV));
+	yuv.z = mix(col1.z, col2.z, ditheredChannel(channelError(yuv.z, col1.z, col2.z), ditherBlockUV));
+	return YUVtoRGB(yuv);
+} 
+
+
 struct FragmentInput {
     @location(0) c_position: vec4<f32>,
     @location(1) world_normal: vec3<f32>,
@@ -128,6 +183,17 @@ let uv_displaced = in.uv;
     base_col = current_color + color_left;
     base_col = base_col;
 
+    if base_col.a <= 0.1 {
+        base_col = vec4<f32>(material.replace_color * (1. - uv_displaced.y), 1.);
+    }
+
+    base_col = base_col * vec4<f32>(material.mult_color, 1.);
+
+
+
+    var final_col = ditherColor(base_col.rgb, uv_displaced, iResolution.x / 4., iResolution.y / 4.);
+
+/* 
     let dith_size = vec2<f32>(textureDimensions(dither_color_texture));
     let buf_size = vec2<f32>(textureDimensions(base_color_texture));
     let dith = textureSample(dither_color_texture, dither_color_sampler, uv_displaced * (buf_size / dith_size)).rgb - 0.5;
@@ -155,16 +221,10 @@ let uv_displaced = in.uv;
     } else {
         final_col = round(base_col.rgb * material.dither_amount + (value - 0.5) * (1.0)) / material.dither_amount;
     }
-
+ */
 /*      if dot(raw_color, vec3(-1.,1.,-1.)) > 0.0 {
         final_col = material.replace_color * (1. - uv_displaced.y);
     } */
-    if base_col.a <= 0.1 {
-        final_col = material.replace_color * (1. - uv_displaced.y);
-    }
-
-    final_col = final_col * material.mult_color;
-
 
 
 
