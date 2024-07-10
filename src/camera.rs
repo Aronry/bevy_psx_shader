@@ -156,7 +156,7 @@ pub fn setup_camera(
                         | TextureUsages::RENDER_ATTACHMENT,
                     view_formats: &[],
                 },
-                sampler: ImageSampler::nearest(),
+                sampler: ImageSampler::linear(),
                 ..default()
             };
 
