@@ -100,7 +100,7 @@ fn ditherColor(col: vec3<f32>, uv: vec2<f32>, xres: f32, yres: f32) -> vec3<f32>
 	var yuv: vec3<f32> = RGBtoYUV(col);
 	let col1: vec3<f32> = floor(yuv * material.dither_amount) / material.dither_amount;
 	let col2: vec3<f32> = ceil(yuv * material.dither_amount) / material.dither_amount;
-	let ditherBlockUV: vec2<f32> = uv * vec2<f32>(xres / 8., yres / 8.);
+	let ditherBlockUV: vec2<f32> = uv * vec2<f32>(xres / 16., yres / 16.);
 	yuv.x = mix(col1.x, col2.x, ditheredChannel(channelError(yuv.x, col1.x, col2.x), ditherBlockUV));
 	yuv.y = mix(col1.y, col2.y, ditheredChannel(channelError(yuv.y, col1.y, col2.y), ditherBlockUV));
 	yuv.z = mix(col1.z, col2.z, ditheredChannel(channelError(yuv.z, col1.z, col2.z), ditherBlockUV));
