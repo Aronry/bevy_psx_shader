@@ -191,7 +191,7 @@ let uv_displaced = in.uv;
 
 
 
-    var final_col = ditherColor(base_col.rgb, uv_displaced, iResolution.x / 2., iResolution.y / 2.);
+    var final_col = ditherColor(base_col.rgb, uv_displaced, iResolution.x / 8., iResolution.y / 8.);
 
 /* 
     let dith_size = vec2<f32>(textureDimensions(dither_color_texture));
