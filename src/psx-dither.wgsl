@@ -170,9 +170,9 @@ let uv_displaced = in.uv;
 
 
     var base_col = textureSample(base_color_texture, base_color_sampler, uv_displaced);
-/* 
-    let pixel_size_y = 1.0 / iResolution.x * 3.;
-    let pixel_size_x = 1.0 / iResolution.y * 3.;
+
+    let pixel_size_y = 1.0 / iResolution.x * 2.;
+    let pixel_size_x = 1.0 / iResolution.y * 2.;
 
     var current_color = base_col;
     var color_left = textureSample(base_color_texture, base_color_sampler, uv_displaced - vec2(pixel_size_x, pixel_size_y));
@@ -182,7 +182,7 @@ let uv_displaced = in.uv;
 
     base_col = current_color + color_left;
     base_col = base_col;
- */
+
     let sky_col = vec3<f32>(1.,1.,1.)  * (1. - uv_displaced.y) + vec3<f32>(0.,0.,1.);
     base_col += vec4<f32>(base_col.rgb + (sky_col * max(1. - base_col.a, 0.)), 1.);
 /*     if base_col.a <= 0.1 {
