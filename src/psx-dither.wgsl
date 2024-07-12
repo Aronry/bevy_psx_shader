@@ -183,7 +183,7 @@ let uv_displaced = in.uv;
     base_col = current_color + color_left;
     base_col = base_col;
 
-    let sky_col = vec3<f32>(1.,1.,1.)  * (1. - uv_displaced.y) + vec3<f32>(0.,0.,1.);
+    let sky_col = material.replace_color  * (0.7 - uv_displaced.y) + vec3<f32>(0.,0.,0.);
     base_col += vec4<f32>(base_col.rgb + (sky_col * max(1. - base_col.a, 0.)), 1.);
 /*     if base_col.a <= 0.1 {
         base_col = vec4<f32>(material.replace_color * (1. - uv_displaced.y), 1.);
