@@ -171,8 +171,8 @@ let uv_displaced = in.uv;
 
     var base_col = textureSample(base_color_texture, base_color_sampler, uv_displaced);
 
-    let pixel_size_y = 1.0 / iResolution.x * 2.;
-    let pixel_size_x = 1.0 / iResolution.y * 2.;
+    let pixel_size_y = 1.0 / iResolution.x * 3.;
+    let pixel_size_x = 1.0 / iResolution.y * 3.;
 
     var current_color = base_col;
     var color_left = textureSample(base_color_texture, base_color_sampler, uv_displaced - vec2(pixel_size_x, pixel_size_y));
