@@ -125,6 +125,10 @@ struct Wave {
     amplitude_y: f32
 };
 
+fn modulo(x: f32, y: f32) -> f32 {
+    return x - y * floor(x / y);
+} 
+
 @fragment
 fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
@@ -147,6 +151,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
     let uv_displaced = vec2<f32>(in.uv.x + offset_x, in.uv.y + offset_y);
  */
+
 
 let uv_displaced = in.uv;
 
@@ -185,6 +190,12 @@ let uv_displaced = in.uv;
 
     let sky_col = material.replace_color  * (0.7 - uv_displaced.y) + vec3<f32>(0.,0.,0.);
     base_col += vec4<f32>(base_col.rgb + (sky_col * max(1. - base_col.a, 0.)), 1.);
+
+    //scanline stuff
+    let line_row: f32 = floor((uv_displaced.y * (iResolution.y / 2.)/2.) + modulo(globals.time * 30., 4.));
+    var n: f32 = 1.0 - ceil(modulo(line_row, 4.)/4.);
+    base_col = vec4(base_col.rgb - n*base_col.rgb*(1. - 0.9), 1.);
+
 /*     if base_col.a <= 0.1 {
         base_col = vec4<f32>(material.replace_color * (1. - uv_displaced.y), 1.);
     }
@@ -209,7 +220,7 @@ let uv_displaced = in.uv;
 
     let threshold = textureSample(dither_color_texture, dither_color_sampler, map_position).r;
 
-    let base_color = base_col.rgb; // - colour * 0.5;
+    let base_color = base_col.rgb - colour * 0.5;
     let luma = (0.2126 * base_color.r + 0.7152 * base_color.g + 0.0722 * base_color.b);
     let value = f32(luma >= threshold);
 
