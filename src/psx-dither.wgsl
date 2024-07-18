@@ -153,7 +153,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
  */
 
 
-let uv_displaced = in.uv;
+    let uv_displaced = in.uv;
 
     //Noise stuff
     var maxStrength = 0.025;
@@ -163,15 +163,14 @@ let uv_displaced = in.uv;
 
     let iResolution = vec2<f32>(textureDimensions(base_color_texture)) * 4.;
 
-    let uv = floor(uv_displaced.xy * iResolution) / iResolution;
-    let uv2 = fract(uv*fract(sin(globals.time*speed)));
+  //  let uv = floor(uv_displaced.xy * iResolution) / iResolution;
+   // let uv2 = fract(uv*fract(sin(globals.time*speed)));
     
     //--- Strength animate ---
 //    maxStrength = clamp(sin(globals.time/2.0),minStrength,maxStrength);
     //-----------------------
     
     //--- Black and white ---
-    let colour = vec3(random(uv2.xy))*maxStrength;
 
 
     var base_col = textureSample(base_color_texture, base_color_sampler, uv_displaced);
@@ -191,59 +190,13 @@ let uv_displaced = in.uv;
     let sky_col = material.replace_color  * (0.7 - uv_displaced.y) + vec3<f32>(0.,0.,0.);
     base_col += vec4<f32>(base_col.rgb + (sky_col * max(1. - base_col.a, 0.)), 1.);
 
-/*     //scanline stuff
-    let line_row: f32 = floor((uv_displaced.y * (iResolution.y / 2.)/2.) + modulo(globals.time * 30., 4.));
-    var n: f32 = 1.0 - ceil(modulo(line_row, 4.)/4.);
-    base_col = vec4(base_col.rgb - n*base_col.rgb*(1. - 0.9), 1.);
- */
-/*     if base_col.a <= 0.1 {
-        base_col = vec4<f32>(material.replace_color * (1. - uv_displaced.y), 1.);
-    }
- */
-    base_col = base_col * vec4<f32>(material.mult_color, 1.) - vec4(colour.rgb, 0.) * 0.9;
+    base_col = base_col * vec4<f32>(material.mult_color, 1.);
 
 
 
     var final_col = ditherColor(base_col.rgb, uv_displaced, iResolution.x / 4., iResolution.y / 4.);
 
-/* 
-    let dith_size = vec2<f32>(textureDimensions(dither_color_texture));
-    let buf_size = vec2<f32>(textureDimensions(base_color_texture));
-    let dith = textureSample(dither_color_texture, dither_color_sampler, uv_displaced * (buf_size / dith_size)).rgb - 0.5;
-    var final_col = vec3(0.0, 0.0, 0.0);
-
-
-    let screen_size = vec2i(textureDimensions(base_color_texture));
-    let threshold_map_size = vec2i(textureDimensions(dither_color_texture));
-    let pixel_position = vec2i(floor(in.uv * vec2f(screen_size)));
-    let map_position = vec2f(pixel_position % threshold_map_size) / vec2f(threshold_map_size);
-
-    let threshold = textureSample(dither_color_texture, dither_color_sampler, map_position).r;
-
-    let base_color = base_col.rgb - colour * 0.5;
-    let luma = (0.2126 * base_color.r + 0.7152 * base_color.g + 0.0722 * base_color.b);
-    let value = f32(luma >= threshold);
-
-
-
-
-    if material.banding_enabled > 0u {
-    //    final_col = round(base_col.rgb * material.dither_amount + dith * (1.0)) / material.dither_amount;
-        
-        final_col = round(base_col.rgb * material.dither_amount + (value - 0.5) * (1.0)) / material.dither_amount;
-    } else {
-        final_col = round(base_col.rgb * material.dither_amount + (value - 0.5) * (1.0)) / material.dither_amount;
-    }
- */
-/*      if dot(raw_color, vec3(-1.,1.,-1.)) > 0.0 {
-        final_col = material.replace_color * (1. - uv_displaced.y);
-    } */
-
-
-
-
     let half_texel = vec3<f32>(1.0 / 64. / 2.);
-
 
     // Notice the ".rbg".
     // If we sample the LUT using ".rgb" instead,
