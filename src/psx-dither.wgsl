@@ -191,16 +191,16 @@ let uv_displaced = in.uv;
     let sky_col = material.replace_color  * (0.7 - uv_displaced.y) + vec3<f32>(0.,0.,0.);
     base_col += vec4<f32>(base_col.rgb + (sky_col * max(1. - base_col.a, 0.)), 1.);
 
-    //scanline stuff
+/*     //scanline stuff
     let line_row: f32 = floor((uv_displaced.y * (iResolution.y / 2.)/2.) + modulo(globals.time * 30., 4.));
     var n: f32 = 1.0 - ceil(modulo(line_row, 4.)/4.);
     base_col = vec4(base_col.rgb - n*base_col.rgb*(1. - 0.9), 1.);
-
+ */
 /*     if base_col.a <= 0.1 {
         base_col = vec4<f32>(material.replace_color * (1. - uv_displaced.y), 1.);
     }
  */
-    base_col = base_col * vec4<f32>(material.mult_color, 1.);
+    base_col = base_col * vec4<f32>(material.mult_color, 1.) - vec4(colour.rgb, 0.) * 0.9;
 
 
 
