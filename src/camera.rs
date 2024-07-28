@@ -157,6 +157,7 @@ pub fn setup_camera(
                     view_formats: &[],
                 },
                 sampler: ImageSampler::nearest(),
+            //    asset_usage: RenderAssetUsages::RENDER_WORLD,
                 ..default()
             };
 
