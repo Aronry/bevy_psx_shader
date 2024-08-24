@@ -184,7 +184,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     current_color = current_color * vec4(1.2, 0.5, 1.0 - 1.2, 1.);
     color_left = color_left * vec4(1. - 1.2, 0.5, 1.2, 1.);
 
-    base_col = current_color + color_left;
+  //  base_col = current_color + color_left;
     base_col = base_col;
 
     let sky_col = material.replace_color  * (0.7 - uv_displaced.y) + vec3<f32>(0.,0.,0.);
