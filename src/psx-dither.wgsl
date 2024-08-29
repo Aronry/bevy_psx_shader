@@ -181,8 +181,8 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     var current_color = base_col;
     var color_left = textureSample(base_color_texture, base_color_sampler, uv_displaced - vec2(pixel_size_x, pixel_size_y));
 
-    current_color = current_color * vec4(1.2, 0.5, 1.0 - 1.2, 1.);
-    color_left = color_left * vec4(1. - 1.2, 0.5, 1.2, 1.);
+    current_color = current_color * vec4(1.2, 0.5, 1.0 - 0.2, 1.);
+    color_left = color_left * vec4(1. - 1.2, 0.5, 1.2, 0.);
 
     base_col = current_color + color_left;
     base_col = base_col;
