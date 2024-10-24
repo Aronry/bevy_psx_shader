@@ -12,6 +12,7 @@ fn main() {
         .run();
 }
 
+// RN3 TEST LOLOL
 
 /// Set up a simple 3D scene
 fn setup(
