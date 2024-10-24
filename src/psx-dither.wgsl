@@ -161,7 +161,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
     let speed = 10.00;
 
-    let iResolution = vec2<f32>(textureDimensions(base_color_texture)) * 4.;
+    let iResolution = vec2<f32>(textureDimensions(base_color_texture)) * 2.;
 
   //  let uv = floor(uv_displaced.xy * iResolution) / iResolution;
    // let uv2 = fract(uv*fract(sin(globals.time*speed)));
