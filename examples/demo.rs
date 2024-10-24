@@ -23,7 +23,7 @@ fn setup(
     asset_server: Res<AssetServer>,
 ) {
     commands.spawn(PsxCamera::new(
-        UVec2::new(1920 /4 , 1080 /4),
+        UVec2::new(1920 /2 , 1080 /2),
         None,
         Color::rgba(0.,0.,0.,0.),
         false,

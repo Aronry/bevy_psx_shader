@@ -32,7 +32,7 @@ pub struct PsxCamera {
 impl Default for PsxCamera {
     fn default() -> Self {
         Self {
-            size: UVec2::new(320, 240),
+            size: UVec2::new(1920 / 2, 1080 / 2),
             fixed_axis: None,
             clear_color: Color::WHITE,
             init: false,
