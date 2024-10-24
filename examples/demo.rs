@@ -1,5 +1,5 @@
-use bevy::prelude::*;
-use bevy_psx::{camera::PsxCamera, material::PsxMaterial, PsxPlugin};
+use bevy::{prelude::*, render::render_resource::Extent3d, sprite::Mesh2dHandle};
+use bevy_psx::{camera::{scale_render_image, PsxCamera, RenderImage}, material::PsxMaterial, PsxPlugin};
 
 fn main() {
     App::new()
@@ -9,6 +9,7 @@ fn main() {
         .insert_resource(Msaa::Off)
         .add_systems(Startup,setup)
         .add_systems(Update,rotate)
+   //     .add_systems(Update,render_image_scale2.before(scale_render_image))
         .run();
 }
 
@@ -137,4 +138,50 @@ fn rotate(time: Res<Time>, mut query: Query<&mut Transform, With<Rotates>>) {
         // transform.rotate_x(0.95 * time.delta_seconds());
         // transform.rotate_z(0.95 * time.delta_seconds());
     }
+}
+pub fn render_image_scale2(
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut images: ResMut<Assets<Image>>,
+    mut pixel_meshes: Query<&Mesh2dHandle, With<RenderImage>>,
+    mut pixel_cameras: Query<&mut PsxCamera>,
+    mut cameras: Query<&mut Camera>,
+    windows: Query<&Window>,
+) {
+    for window in windows.iter() {
+        
+
+        for mut psx_camera in pixel_cameras.iter_mut() {
+            for mut camera in cameras.iter_mut() {
+                if let Some(image_handle) = camera.target.as_image() {
+                    if let Some(image) = images.get_mut(image_handle) {
+                        let window_size = UVec2::new(window.resolution.physical_width(), window.resolution.physical_height());
+    
+
+
+                        let size = Extent3d {
+                            width: window_size.x / 2,
+                            height: window_size.y / 2,
+                            ..default()
+                        };
+
+
+                        if image.size() != UVec2::new(size.width, size.height) {
+                            psx_camera.size = UVec2::new(size.width, size.height);
+                            image.resize(size);    
+                            for pixel_mesh in pixel_meshes.iter() {
+                                if let Some(mesh) = meshes.get_mut(pixel_mesh.0.clone()) {
+                                    *mesh = Mesh::from(shape::Quad::new(Vec2::new(
+                                        size.width as f32,
+                                        size.height as f32,
+                                    )));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
 }

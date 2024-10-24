@@ -129,6 +129,15 @@ fn modulo(x: f32, y: f32) -> f32 {
     return x - y * floor(x / y);
 } 
 
+fn pincush(uv: vec2<f32>, strength: f32) -> vec2<f32> {
+    let st = uv - 0.5;
+    let uvA = atan2(st.x, st.y);
+    let uvD = dot(st, st);
+    return 0.5 + (vec2(sin(uvA), cos(uvA)) * sqrt(uvD) * (1.0 - strength * uvD));
+}
+
+
+
 @fragment
 fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
@@ -173,23 +182,15 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     //--- Black and white ---
 
 
-    var base_col = textureSample(base_color_texture, base_color_sampler, uv_displaced);
+  //  var base_col = textureSample(base_color_texture, base_color_sampler, uv_displaced);
 
-    let pixel_size_y = 1.0 / iResolution.x * 3.;
-    let pixel_size_x = 1.0 / iResolution.y * 3.;
 
-    var current_color = base_col;
-    var color_left = textureSample(base_color_texture, base_color_sampler, uv_displaced - vec2(pixel_size_x, pixel_size_y));
+    let rChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.3 * 1.2)).r;
+    let gChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.15 * 1.2)).g;
+    let bChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.075 * 1.2)).b;
+    var base_col = vec4(rChannel, gChannel, bChannel, 1.);
 
-    current_color = current_color * vec4(1.2, 0.5, 1.0 - 1.2, 1.);
-    color_left = color_left * vec4(1. - 1.2, 0.5, 1.2, 1.);
-
-    base_col = current_color + color_left;
 //    base_col = vec4(base_col.rgb + dpdx(base_col.rgb)*vec3(3.,0.,-3.), base_col.a);
-    base_col = base_col;
-
-    let sky_col = material.replace_color  * (0.7 - uv_displaced.y) + vec3<f32>(0.,0.,0.);
-    base_col += vec4<f32>(base_col.rgb + (sky_col * max(1. - base_col.a, 0.)), 1.);
 
     base_col = base_col * vec4<f32>(material.mult_color, 1.);
 
