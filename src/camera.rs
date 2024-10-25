@@ -390,6 +390,7 @@ pub fn scale_render_image(
 
                     println!("texture_transform.scale: {}", texture_transform.scale);
                     println!("window_size: {}", window_size);
+                    println!("screen_size: {} {}", screen_width, screen_height);
 
                     camera.viewport = Some(Viewport {
                         physical_size: window_size,
