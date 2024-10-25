@@ -1,15 +1,26 @@
-use bevy::{prelude::*, render::render_resource::Extent3d, sprite::Mesh2dHandle};
+use bevy::{prelude::*, render::render_resource::Extent3d, sprite::Mesh2dHandle, window::{PresentMode, WindowMode}};
 use bevy_psx::{camera::{scale_render_image, PsxCamera, RenderImage}, material::PsxMaterial, PsxPlugin};
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
+        .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest())
+            .set(WindowPlugin {
+                    primary_window: Some(Window {
+                    resizable: true,
+                    present_mode: PresentMode::AutoNoVsync,
+                    mode: WindowMode::Fullscreen,
+                    title: "RuleNo3".to_string(),
+                    ..default()
+                    }),
+                    ..default()
+                    })
+            )
     //    .add_plugins(DefaultPlugins)
         .add_plugins(PsxPlugin)
         .insert_resource(Msaa::Off)
         .add_systems(Startup,setup)
         .add_systems(Update,rotate)
-   //     .add_systems(Update,render_image_scale2.before(scale_render_image))
+        .add_systems(Update,render_image_scale2.after(scale_render_image))
         .run();
 }
 
@@ -140,6 +151,7 @@ fn rotate(time: Res<Time>, mut query: Query<&mut Transform, With<Rotates>>) {
     }
 }
 pub fn render_image_scale2(
+    time: Res<Time>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut images: ResMut<Assets<Image>>,
     mut pixel_meshes: Query<&Mesh2dHandle, With<RenderImage>>,
@@ -147,6 +159,10 @@ pub fn render_image_scale2(
     mut cameras: Query<&mut Camera>,
     windows: Query<&Window>,
 ) {
+    if time.elapsed_seconds() < 2. {
+        return;
+    }
+
     for window in windows.iter() {
         
 
@@ -167,6 +183,7 @@ pub fn render_image_scale2(
 
                         if image.size() != UVec2::new(size.width, size.height) {
                             psx_camera.size = UVec2::new(size.width, size.height);
+                            println!("FAG");
                             image.resize(size);    
                             for pixel_mesh in pixel_meshes.iter() {
                                 if let Some(mesh) = meshes.get_mut(pixel_mesh.0.clone()) {

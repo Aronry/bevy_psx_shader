@@ -388,6 +388,9 @@ pub fn scale_render_image(
 
                     texture_transform.scale = Vec3::new(scale_width, scale_height, 1.0);
 
+                    println!("texture_transform.scale: {}", texture_transform.scale);
+                    println!("window_size: {}", window_size);
+
                     camera.viewport = Some(Viewport {
                         physical_size: window_size,
                         physical_position: window_position,

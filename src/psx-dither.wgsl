@@ -185,9 +185,9 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
   //  var base_col = textureSample(base_color_texture, base_color_sampler, uv_displaced);
 
 
-    let rChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.3 * 1.2)).r;
-    let gChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.15 * 1.2)).g;
-    let bChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.075 * 1.2)).b;
+    let rChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.3 * 1.05)).r;
+    let gChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.15 * 1.05)).g;
+    let bChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.075 * 1.05)).b;
     var base_col = vec4(rChannel, gChannel, bChannel, 1.);
 
 //    base_col = vec4(base_col.rgb + dpdx(base_col.rgb)*vec3(3.,0.,-3.), base_col.a);

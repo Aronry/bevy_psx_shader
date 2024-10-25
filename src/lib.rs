@@ -48,7 +48,8 @@ impl Plugin for PsxPlugin {
             .register_type::<ScalingMode>()
             .register_type::<Aabb>()
             .add_systems(PreUpdate, camera::setup_camera)
-            .add_systems(Update,camera::scale_render_image);
+            .add_systems(Update,camera::scale_render_image)
+            ;
 
 
         load_internal_binary_asset!(app, PSX_DITHER_HANDLE, "psx-dith.png", image_load);
