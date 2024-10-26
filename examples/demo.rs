@@ -1,26 +1,15 @@
-use bevy::{prelude::*, render::render_resource::Extent3d, sprite::Mesh2dHandle, window::{PresentMode, WindowMode}};
+use bevy::{prelude::*, render::render_resource::Extent3d, sprite::Mesh2dHandle};
 use bevy_psx::{camera::{scale_render_image, PsxCamera, RenderImage}, material::PsxMaterial, PsxPlugin};
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest())
-            .set(WindowPlugin {
-                    primary_window: Some(Window {
-                    resizable: true,
-                    present_mode: PresentMode::AutoNoVsync,
-                    mode: WindowMode::Fullscreen,
-                    title: "RuleNo3".to_string(),
-                    ..default()
-                    }),
-                    ..default()
-                    })
-            )
+        .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
     //    .add_plugins(DefaultPlugins)
         .add_plugins(PsxPlugin)
         .insert_resource(Msaa::Off)
         .add_systems(Startup,setup)
         .add_systems(Update,rotate)
-        .add_systems(Update,render_image_scale2.after(scale_render_image))
+    //    .add_systems(Update,render_image_scale2.after(scale_render_image))
         .run();
 }
 
@@ -45,7 +34,7 @@ fn setup(
     ));
     let transform =
     Transform::from_scale(Vec3::splat(0.20)).with_translation(Vec3::new(0.0, -3.5, -10.0));
-/*     commands.spawn((
+    commands.spawn((
         MaterialMeshBundle {
             mesh: asset_server.load("dvaBlender.glb#Mesh2/Primitive0"),
             material: materials.add(PsxMaterial {
@@ -92,8 +81,8 @@ fn setup(
             ..default()
         },
         Rotates,
-    )); */
-
+    ));
+/* 
     commands.spawn((
         MaterialMeshBundle {
             mesh: asset_server.load("dvaBlender.glb#Mesh2/Primitive0"),
@@ -130,7 +119,7 @@ fn setup(
             ..default()
         },
         Rotates,
-    ));
+    )); */
     commands.spawn(PointLightBundle {
         transform: Transform::from_translation(Vec3::new(0.0, 0.0, 10.0)),
         ..default()

@@ -196,7 +196,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
 
 
-    var final_col = ditherColor(base_col.rgb, uv_displaced, iResolution.x / 2., iResolution.y / 2.);
+    var final_col = ditherColor(base_col.rgb, uv_displaced, iResolution.x / 4., iResolution.y / 4.);
 
     let half_texel = vec3<f32>(1.0 / 64. / 2.);
 
