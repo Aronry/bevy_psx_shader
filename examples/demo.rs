@@ -1,12 +1,35 @@
 use bevy::{prelude::*, render::render_resource::Extent3d, sprite::Mesh2dHandle};
 use bevy_psx::{camera::{scale_render_image, PsxCamera, RenderImage}, material::PsxMaterial, PsxPlugin};
 
+
+use std::ops::Range;
+
+use bevy::{
+    color::palettes::css::{BLACK, WHITE},
+    core_pipeline::{fxaa::Fxaa, Skybox},
+    input::mouse::MouseWheel,
+    math::{vec3, vec4},
+    pbr::{
+        DefaultOpaqueRendererMethod, ExtendedMaterial, MaterialExtension,
+        ScreenSpaceReflectionsBundle, ScreenSpaceReflectionsSettings,
+    },
+    prelude::*,
+    render::{
+        render_resource::{AsBindGroup, ShaderRef, ShaderType},
+        texture::{
+            ImageAddressMode, ImageFilterMode, ImageLoaderSettings, ImageSampler,
+            ImageSamplerDescriptor,
+        },
+    },
+};
 fn main() {
     App::new()
+        .insert_resource(DefaultOpaqueRendererMethod::deferred())
+        .insert_resource(Msaa::Off)
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
+        .add_plugins(MaterialPlugin::<ExtendedMaterial<StandardMaterial, Water>>::default())
     //    .add_plugins(DefaultPlugins)
         .add_plugins(PsxPlugin)
-        .insert_resource(Msaa::Off)
         .add_systems(Startup,setup)
         .add_systems(Update,rotate)
     //    .add_systems(Update,render_image_scale2.after(scale_render_image))
@@ -18,23 +41,25 @@ fn main() {
 /// Set up a simple 3D scene
 fn setup(
     mut commands: Commands,
-    _meshes: ResMut<Assets<Mesh>>,
+ //   _meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<PsxMaterial>>,
     mut smaterials: ResMut<Assets<StandardMaterial>>,
     asset_server: Res<AssetServer>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut water_materials: ResMut<Assets<ExtendedMaterial<StandardMaterial, Water>>>,
 ) {
     commands.spawn(PsxCamera::new(
         UVec2::new(1920 /2 , 1080 /2),
         None,
         Color::rgba(0.,0.,0.,0.),
-        false,
+        true,
         48.,
         45.,
         1
     ));
     let transform =
     Transform::from_scale(Vec3::splat(0.20)).with_translation(Vec3::new(0.0, -3.5, -10.0));
-    commands.spawn((
+/*     commands.spawn((
         MaterialMeshBundle {
             mesh: asset_server.load("dvaBlender.glb#Mesh2/Primitive0"),
             material: materials.add(PsxMaterial {
@@ -81,8 +106,14 @@ fn setup(
             ..default()
         },
         Rotates,
-    ));
-/* 
+    )); */
+    spawn_water(
+        &mut commands,
+        &asset_server,
+        &mut meshes,
+        &mut water_materials,
+    );
+
     commands.spawn((
         MaterialMeshBundle {
             mesh: asset_server.load("dvaBlender.glb#Mesh2/Primitive0"),
@@ -119,7 +150,7 @@ fn setup(
             ..default()
         },
         Rotates,
-    )); */
+    ));
     commands.spawn(PointLightBundle {
         transform: Transform::from_translation(Vec3::new(0.0, 0.0, 10.0)),
         ..default()
@@ -139,7 +170,7 @@ fn rotate(time: Res<Time>, mut query: Query<&mut Transform, With<Rotates>>) {
         // transform.rotate_z(0.95 * time.delta_seconds());
     }
 }
-pub fn render_image_scale2(
+/* pub fn render_image_scale2(
     time: Res<Time>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut images: ResMut<Assets<Image>>,
@@ -176,10 +207,10 @@ pub fn render_image_scale2(
                             image.resize(size);    
                             for pixel_mesh in pixel_meshes.iter() {
                                 if let Some(mesh) = meshes.get_mut(pixel_mesh.0.clone()) {
-                                    *mesh = Mesh::from(shape::Quad::new(Vec2::new(
+                                    *mesh = Mesh::from(Rectangle::new(
                                         size.width as f32,
                                         size.height as f32,
-                                    )));
+                                    ));
                                 }
                             }
                         }
@@ -190,4 +221,86 @@ pub fn render_image_scale2(
 
     }
 
+}
+ */
+
+// Spawns the water plane.
+fn spawn_water(
+    commands: &mut Commands,
+    asset_server: &AssetServer,
+    meshes: &mut Assets<Mesh>,
+    water_materials: &mut Assets<ExtendedMaterial<StandardMaterial, Water>>,
+) {
+    commands.spawn(MaterialMeshBundle {
+        mesh: meshes.add(Plane3d::new(Vec3::Y, Vec2::splat(1.0))),
+        material: water_materials.add(ExtendedMaterial {
+            base: StandardMaterial {
+                base_color: BLACK.into(),
+                perceptual_roughness: 0.0,
+                ..default()
+            },
+            extension: Water {
+                normals: asset_server.load_with_settings::<Image, ImageLoaderSettings>(
+                    "textures/water_normals.png",
+                    |settings| {
+                        settings.is_srgb = false;
+                        settings.sampler = ImageSampler::Descriptor(ImageSamplerDescriptor {
+                            address_mode_u: ImageAddressMode::Repeat,
+                            address_mode_v: ImageAddressMode::Repeat,
+                            mag_filter: ImageFilterMode::Linear,
+                            min_filter: ImageFilterMode::Linear,
+                            ..default()
+                        });
+                    },
+                ),
+                // These water settings are just random values to create some
+                // variety.
+                settings: WaterSettings {
+                    octave_vectors: [
+                        vec4(0.080, 0.059, 0.073, -0.062),
+                        vec4(0.153, 0.138, -0.149, -0.195),
+                    ],
+                    octave_scales: vec4(1.0, 2.1, 7.9, 14.9) * 5.0,
+                    octave_strengths: vec4(0.16, 0.18, 0.093, 0.044),
+                },
+            },
+        }),
+        transform: Transform::from_scale(Vec3::splat(100.0)).with_translation(Vec3::Y * -1.),
+        ..default()
+    });
+}
+
+
+/// A custom [`ExtendedMaterial`] that creates animated water ripples.
+#[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
+struct Water {
+    /// The normal map image.
+    ///
+    /// Note that, like all normal maps, this must not be loaded as sRGB.
+    #[texture(100)]
+    #[sampler(101)]
+    normals: Handle<Image>,
+
+    // Parameters to the water shader.
+    #[uniform(102)]
+    settings: WaterSettings,
+}
+
+/// Parameters to the water shader.
+#[derive(ShaderType, Debug, Clone)]
+struct WaterSettings {
+    /// How much to displace each octave each frame, in the u and v directions.
+    /// Two octaves are packed into each `vec4`.
+    octave_vectors: [Vec4; 2],
+    /// How wide the waves are in each octave.
+    octave_scales: Vec4,
+    /// How high the waves are in each octave.
+    octave_strengths: Vec4,
+}
+
+
+impl MaterialExtension for Water {
+    fn deferred_fragment_shader() -> ShaderRef {
+        "water_material.wgsl".into()
+    }
 }

@@ -3,14 +3,11 @@
 use std::f32::consts::PI;
 
 use bevy::{
-    prelude::*,
-    render::{
+    pbr::ScreenSpaceReflectionsBundle, prelude::*, render::{
         camera::{Exposure, PhysicalCameraParameters, RenderTarget, Viewport}, render_asset::RenderAssetUsages, render_resource::{
             Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages,
         }, texture::{BevyDefault, ImageAddressMode, ImageSampler, ImageSamplerDescriptor}, view::RenderLayers
-    },
-    sprite::MaterialMesh2dBundle,
-    window::PrimaryWindow,
+    }, sprite::MaterialMesh2dBundle, window::PrimaryWindow
 };
 
 use bevy::render::render_resource::*;
@@ -169,8 +166,7 @@ pub fn setup_camera(
             // The camera we are actually rendering to
             let camera = if pixel_camera.hdr {
                 Camera3dBundle {
-                    dither: bevy::core_pipeline::tonemapping::DebandDither::Disabled,
-                    tonemapping: bevy::core_pipeline::tonemapping::Tonemapping::None,
+                //    tonemapping: bevy::core_pipeline::tonemapping::Tonemapping::None,
                     camera: Camera {
                         target: RenderTarget::Image(image_handle.clone()),
                         clear_color: ClearColorConfig::Custom(Color::rgba(0.,0.,0.,0.)),
@@ -189,13 +185,13 @@ pub fn setup_camera(
                         aperture_f_stops: 1.0,
                         shutter_speed_s: 1. / 31.,
                         sensitivity_iso: 500.,
-                    }),
+                        ..Default::default()
+                    }), 
                     ..Default::default()
                 }
             } else {
                 Camera3dBundle {
-                    dither: bevy::core_pipeline::tonemapping::DebandDither::Disabled,
-                    tonemapping: bevy::core_pipeline::tonemapping::Tonemapping::None,
+                //    tonemapping: bevy::core_pipeline::tonemapping::Tonemapping::None,
                     camera: Camera {
                         target: RenderTarget::Image(image_handle.clone()),
                         clear_color: ClearColorConfig::Custom(Color::rgba(0.,0.,0.,0.)),
@@ -210,23 +206,25 @@ pub fn setup_camera(
                         aperture_f_stops: 1.0,
                         shutter_speed_s: 1. / 31.,
                         sensitivity_iso: 500.,
-                    }),
+                        ..Default::default()
+                    }), 
                     ..Default::default()
                 }
             };
 
             commands
                 .entity(entity)
+            //    .insert()
                 //.insert((UiCameraConfig { show_ui: false }, camera));
-                .insert((Visibility::Hidden, camera));
+                .insert((Visibility::Hidden, camera, ScreenSpaceReflectionsBundle::default()));
 
-            let render_layer = RenderLayers::layer((RenderLayers::TOTAL_LAYERS - 1) as u8);
-            let ui_layer = RenderLayers::layer((RenderLayers::TOTAL_LAYERS - 2) as u8);
+            let render_layer = 3 ;
+            let ui_layer = render_layer - 1;
 
-            let quad_handle = meshes.add(Mesh::from(shape::Quad::new(Vec2::new(
+            let quad_handle = meshes.add(Mesh::from(Rectangle::new(
                 size.width as f32,
                 size.height as f32,
-            ))));
+            )));
 
 
             //dithering
@@ -295,7 +293,7 @@ pub fn setup_camera(
                     transform: Transform { ..default() },
                     ..default()
                 },
-                render_layer,
+                RenderLayers::layer(render_layer),
                 RenderImage,
             ));
 
@@ -315,7 +313,7 @@ pub fn setup_camera(
                     },
                     ..Camera2dBundle::default()
                 },
-                render_layer,
+                RenderLayers::layer(render_layer),
                 FinalCameraTag,
                 //UiCameraConfig { show_ui: false },
             ));
@@ -331,7 +329,7 @@ pub fn setup_camera(
                     camera_2d: Camera2d {},
                     ..Default::default()
                 },
-                ui_layer,
+                RenderLayers::layer(ui_layer),
             ));
         }
     }
@@ -387,11 +385,11 @@ pub fn scale_render_image(
                     };
 
                     texture_transform.scale = Vec3::new(scale_width, scale_height, 1.0);
-
+/* 
                     println!("texture_transform.scale: {}", texture_transform.scale);
                     println!("window_size: {}", window_size);
                     println!("screen_size: {} {}", screen_width, screen_height);
-
+ */
                     camera.viewport = Some(Viewport {
                         physical_size: window_size,
                         physical_position: window_position,
