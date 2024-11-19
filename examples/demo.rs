@@ -1,4 +1,4 @@
-use bevy::{prelude::*, render::render_resource::Extent3d, sprite::Mesh2dHandle};
+use bevy::{core_pipeline::bloom::BloomSettings, prelude::*, render::render_resource::Extent3d, sprite::Mesh2dHandle};
 use bevy_psx::{camera::{scale_render_image, PsxCamera, RenderImage}, material::PsxMaterial, PsxPlugin};
 
 
@@ -48,15 +48,15 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut water_materials: ResMut<Assets<ExtendedMaterial<StandardMaterial, Water>>>,
 ) {
-    commands.spawn(PsxCamera::new(
+    commands.spawn((PsxCamera::new(
         UVec2::new(1920 /2 , 1080 /2),
         None,
-        Color::rgba(0.,0.,0.,0.),
+        Color::rgba(0.,0.,0.,1.),
         true,
         48.,
         45.,
         1
-    ));
+    ), BloomSettings::default()));
     let transform =
     Transform::from_scale(Vec3::splat(0.20)).with_translation(Vec3::new(0.0, -3.5, -10.0));
 /*     commands.spawn((
@@ -119,6 +119,7 @@ fn setup(
             mesh: asset_server.load("dvaBlender.glb#Mesh2/Primitive0"),
             material: smaterials.add(StandardMaterial {
                 base_color_texture: Some(asset_server.load("dvaBlender.glb#Texture0")),
+                perceptual_roughness: 0.,
                 ..Default::default()
             }),
             transform,
@@ -131,6 +132,7 @@ fn setup(
             mesh: asset_server.load("dvaBlender.glb#Mesh0/Primitive0"),
             material: smaterials.add(StandardMaterial {
                 base_color_texture: Some(asset_server.load("dvaBlender.glb#Texture0")),
+                perceptual_roughness: 0.,
                 ..Default::default()
             }),
             transform,
@@ -144,6 +146,7 @@ fn setup(
             mesh: asset_server.load("dvaBlender.glb#Mesh1/Primitive0"),
             material: smaterials.add(StandardMaterial {
                 base_color_texture: Some(asset_server.load("dvaBlender.glb#Texture0")),
+                perceptual_roughness: 0.,
                 ..Default::default()
             }),
             transform,
