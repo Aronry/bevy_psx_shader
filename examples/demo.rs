@@ -49,7 +49,7 @@ fn setup(
     mut water_materials: ResMut<Assets<ExtendedMaterial<StandardMaterial, Water>>>,
 ) {
     commands.spawn((PsxCamera::new(
-        UVec2::new(1920 /2 , 1080 /2),
+        UVec2::new(1920 /4 , 1080 /4),
         None,
         Color::rgba(0.,0.,0.,1.),
         true,

@@ -179,6 +179,7 @@ pub fn setup_camera(
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
                         fov: pixel_camera.fov * PI / 180.,
+                        near: 0.01,
                         ..default()
                     }),
                     exposure: Exposure::from_physical_camera(PhysicalCameraParameters {
@@ -200,6 +201,7 @@ pub fn setup_camera(
                     },
                     projection: Projection::Perspective(PerspectiveProjection {
                         fov: pixel_camera.fov * PI / 180.,
+                        near: 0.01,
                         ..default()
                     }),
                     exposure: Exposure::from_physical_camera(PhysicalCameraParameters {
