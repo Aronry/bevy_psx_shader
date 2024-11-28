@@ -31,7 +31,7 @@ fn main() {
     //    .add_plugins(DefaultPlugins)
         .add_plugins(PsxPlugin)
         .add_systems(Startup,setup)
-        .add_systems(Update,rotate)
+    //    .add_systems(Update,rotate)
     //    .add_systems(Update,render_image_scale2.after(scale_render_image))
         .run();
 }
@@ -53,7 +53,7 @@ fn setup(
         None,
         Color::rgba(0.,0.,0.,1.),
         true,
-        48.,
+        32.,
         45.,
         1
     ), BloomSettings::default()));

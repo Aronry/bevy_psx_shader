@@ -6,7 +6,7 @@ use bevy::{
     pbr::ScreenSpaceReflectionsBundle, prelude::*, render::{
         camera::{Exposure, PhysicalCameraParameters, RenderTarget, Viewport}, render_asset::RenderAssetUsages, render_resource::{
             Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages,
-        }, texture::{BevyDefault, ImageAddressMode, ImageSampler, ImageSamplerDescriptor}, view::RenderLayers
+        }, texture::{BevyDefault, ImageAddressMode, ImageFilterMode, ImageLoaderSettings, ImageSampler, ImageSamplerDescriptor}, view::RenderLayers
     }, sprite::MaterialMesh2dBundle, window::PrimaryWindow
 };
 
@@ -108,6 +108,7 @@ pub fn setup_camera(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<PsxDitherMaterial>>,
     mut images: ResMut<Assets<Image>>,
+    asset_server: Res<AssetServer>,
 ) {
     for (mut pixel_camera, entity) in camera.iter_mut() {
         if !pixel_camera.init {
@@ -224,10 +225,10 @@ pub fn setup_camera(
             let ui_layer = render_layer - 1;
 
             let quad_handle = meshes.add(Mesh::from(Rectangle::new(
-                size.width as f32,
-                size.height as f32,
+                (size.width * 4) as f32,
+                (size.height * 4) as f32,
             )));
-
+/* 
 
             //dithering
             let level = 3;
@@ -277,9 +278,23 @@ pub fn setup_camera(
             desc.address_mode_w = ImageAddressMode::Repeat;
             image.sampler = ImageSampler::Descriptor(desc);
 
+
+            
             let dither_handle = images.add(image);
-
-
+ */
+            let dither_handle = asset_server.load_with_settings::<Image, ImageLoaderSettings>(
+                "textures/psx_dither.png",
+                |settings| {
+                    settings.is_srgb = true;
+                    settings.sampler = ImageSampler::Descriptor(ImageSamplerDescriptor {
+                        address_mode_u: ImageAddressMode::ClampToEdge,
+                        address_mode_v: ImageAddressMode::ClampToEdge,
+                        mag_filter: ImageFilterMode::Nearest,
+                        min_filter: ImageFilterMode::Nearest,
+                        ..default()
+                    });
+                }
+            );
 
 
             commands.spawn((
@@ -392,6 +407,7 @@ pub fn scale_render_image(
                     println!("window_size: {}", window_size);
                     println!("screen_size: {} {}", screen_width, screen_height);
  */
+                    texture_transform.scale = Vec3::ONE * 1.;
                     camera.viewport = Some(Viewport {
                         physical_size: window_size,
                         physical_position: window_position,
