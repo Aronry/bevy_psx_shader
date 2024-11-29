@@ -196,17 +196,22 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
   //  var base_col = textureSample(base_color_texture, base_color_sampler, uv_displaced);
 
 
-    let rChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.3 * 1.05)).r;
-    let gChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.15 * 1.05)).g;
-    let bChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.075 * 1.05)).b;
+    let rChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.3 * 0.3)).r;
+    let gChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.15 * 0.3)).g;
+    let bChannel = textureSample(base_color_texture, base_color_sampler, pincush(uv_displaced, 0.075 * 0.3)).b;
     var base_col = vec4(rChannel, gChannel, bChannel, 1.);
 
 //    base_col = vec4(base_col.rgb + dpdx(base_col.rgb)*vec3(3.,0.,-3.), base_col.a);
 
  //   base_col = base_col * vec4<f32>(material.mult_color, 1.);
 
+/*     let chroma = dpdx(base_col.rgb)*vec3(3.,0.,-3.);
     base_col = textureSample(base_color_texture, base_color_sampler, uv_displaced);
 
+    base_col.r += chroma.r;
+    base_col.g += chroma.g;
+    base_col.b += chroma.b;
+ */
     var final_col = ditherColor(base_col.rgb, uv_displaced, iResolution.x * 2., iResolution.y * 2.);
 
     let half_texel = vec3<f32>(1.0 / 64. / 2.);
@@ -216,6 +221,8 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     // the way the 3D texture is loaded will mean the
     // green and blue colors are swapped.
     // This mitigates that.
+
+
     let raw_color = final_col.rbg;// - colour * 0.5;
     final_col = vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color + half_texel).rgb, 1.0).rgb;
 
