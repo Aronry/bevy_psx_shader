@@ -203,7 +203,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
 //    base_col = vec4(base_col.rgb + dpdx(base_col.rgb)*vec3(3.,0.,-3.), base_col.a);
 
- //   base_col = base_col * vec4<f32>(material.mult_color, 1.);
+    base_col = base_col * vec4<f32>(material.mult_color, 1.);
 
 /*     let chroma = dpdx(base_col.rgb)*vec3(3.,0.,-3.);
     base_col = textureSample(base_color_texture, base_color_sampler, uv_displaced);
