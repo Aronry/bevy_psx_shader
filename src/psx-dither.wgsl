@@ -207,5 +207,8 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     let raw_color = final_col.rbg;// - colour * 0.5;
     final_col = vec4<f32>(textureSample(lut_texture, lut_sampler, raw_color + half_texel).rgb, 1.0).rgb;
 
+    let noise = (fract(sin(dot(in.uv * globals.time, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 2.0;
+    final_col += vec3(noise * 0.05);
+
     return vec4(final_col, 1.0);
 }
