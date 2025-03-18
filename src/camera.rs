@@ -167,8 +167,7 @@ pub fn setup_camera(
             // The camera we are actually rendering to
             let camera = if pixel_camera.hdr {
                 Camera3dBundle {
-                //    tonemapping: bevy::core_pipeline::tonemapping::Tonemapping::TonyMcMapface,
-                    tonemapping: bevy::core_pipeline::tonemapping::Tonemapping::None,
+                    tonemapping: bevy::core_pipeline::tonemapping::Tonemapping::TonyMcMapface,
                     camera: Camera {
                         target: RenderTarget::Image(image_handle.clone()),
                         clear_color: ClearColorConfig::Custom(Color::rgba(0.,0.,0.,0.)),
@@ -194,8 +193,7 @@ pub fn setup_camera(
                 }
             } else {
                 Camera3dBundle {
-                //    tonemapping: bevy::core_pipeline::tonemapping::Tonemapping::TonyMcMapface,
-                    tonemapping: bevy::core_pipeline::tonemapping::Tonemapping::None,
+                    tonemapping: bevy::core_pipeline::tonemapping::Tonemapping::TonyMcMapface,
                     camera: Camera {
                         target: RenderTarget::Image(image_handle.clone()),
                         clear_color: ClearColorConfig::Custom(Color::rgba(0.,0.,0.,0.)),
