@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_psx::{camera::PsxCamera, material::PsxMaterial, PsxPlugin};
+use bevy_psx::{camera::PsxCamera, material::{PsxDitherMaterial, PsxMaterial}, PsxPlugin};
 
 fn main() {
     App::new()
@@ -9,6 +9,7 @@ fn main() {
         .insert_resource(Msaa::Off)
         .add_systems(Startup,setup)
         .add_systems(Update,rotate)
+        .add_systems(Update,blur)
         .run();
 }
 
@@ -135,5 +136,13 @@ fn rotate(time: Res<Time>, mut query: Query<&mut Transform, With<Rotates>>) {
         // transform.scale = Vec3::splat(0.25);
         // transform.rotate_x(0.95 * time.delta_seconds());
         // transform.rotate_z(0.95 * time.delta_seconds());
+    }
+}
+
+/// Rotates any entity around the x and y axis
+fn blur(time: Res<Time>, mut mats: ResMut<Assets<PsxDitherMaterial>>) {
+    for mut mat in mats.iter_mut() {
+        mat.1.pixel_blur = time.elapsed_seconds().sin().max(0.) * 0.5;
+        println!("{}", mat.1.pixel_blur);
     }
 }

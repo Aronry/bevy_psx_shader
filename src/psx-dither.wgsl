@@ -10,6 +10,7 @@ struct PsxDitherMaterial {
     mult_color: vec3<f32>,
     dither_amount: f32,
     banding_enabled: u32,
+    pixel_blur: f32,
 };
 
 
@@ -151,9 +152,33 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
     let uv_displaced = vec2<f32>(in.uv.x + offset_x, in.uv.y + offset_y);
  */
+    let iResolution = vec2<f32>(textureDimensions(base_color_texture)) * 4.;
 
+    let transitionDelay = 0.5;			// Start transition after x Seconds.
+    let transitionTime = 1.5;				// Transition lasts x Seconds.
+    let maximumBlockSize = 12.0;			// Maximum Block Size (2 ^ x)
+    let blockOffset = vec2(0.5, 0.5);		// Inner Block offset
+    let pixelateCenter = vec2(0.5, 0.5);	// Pixelate offset.
+    
+    // Animation Calculations
+    let time = modulo(globals.time, (transitionDelay+transitionTime)*2.0); // Repeat every 4 seconds.
+    let animTime = clamp(time - transitionDelay, 0.0, transitionTime);		// Time in 0..transitionTime
+  //  let animProgress = animTime / transitionTime;								// Time as Progress (0..1)
+    let animProgress = material.pixel_blur;
+    let animStuff = 1.0 - (abs(animProgress - 0.5) * 2.0);					// Progress as a bounce value (0..1..0)
+    // There are two ways to calculate this, one is pixel aligned the other is block aligned.
+    let animBlockSize = floor(pow(2.0, maximumBlockSize * animStuff));		// Block Size, always a multiple of 2. (Pixel Aligned)
 
-    let uv_displaced = in.uv;
+    var finalUV = in.uv;				// Use 0..1 UVs
+    finalUV -= pixelateCenter;		// Offset by the pixelation center.
+    finalUV *= iResolution.xy;		// Convert to 0..Resolution UVs for pixelation.
+    finalUV /= animBlockSize;		// Divide by current block size.
+    finalUV = floor(finalUV) + blockOffset;	// Use floor() on it to get aligned pixels. *1
+    finalUV *= animBlockSize;		// Multiply by current block size.
+    finalUV /= iResolution.xy;		// Convert back to 0..1 UVs for texture sampling.
+    finalUV += pixelateCenter;		// Revert the offset by the pixelation center again.
+
+    let uv_displaced = finalUV; //in.uv;
 
     //Noise stuff
     var maxStrength = 0.025;
@@ -161,7 +186,6 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
     let speed = 10.00;
 
-    let iResolution = vec2<f32>(textureDimensions(base_color_texture)) * 4.;
 
   //  let uv = floor(uv_displaced.xy * iResolution) / iResolution;
    // let uv2 = fract(uv*fract(sin(globals.time*speed)));
