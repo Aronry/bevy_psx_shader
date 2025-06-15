@@ -33,7 +33,7 @@ fn setup(
     ));
     let transform =
     Transform::from_scale(Vec3::splat(0.20)).with_translation(Vec3::new(0.0, -3.5, -10.0));
-/*     commands.spawn((
+    commands.spawn((
         MaterialMeshBundle {
             mesh: asset_server.load("dvaBlender.glb#Mesh2/Primitive0"),
             material: materials.add(PsxMaterial {
@@ -80,9 +80,9 @@ fn setup(
             ..default()
         },
         Rotates,
-    )); */
+    ));
 
-    commands.spawn((
+/*     commands.spawn((
         MaterialMeshBundle {
             mesh: asset_server.load("dvaBlender.glb#Mesh2/Primitive0"),
             material: smaterials.add(StandardMaterial {
@@ -118,7 +118,7 @@ fn setup(
             ..default()
         },
         Rotates,
-    ));
+    )); */
     commands.spawn(PointLightBundle {
         transform: Transform::from_translation(Vec3::new(0.0, 0.0, 10.0)),
         ..default()

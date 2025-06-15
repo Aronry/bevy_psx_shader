@@ -1,4 +1,6 @@
 #import bevy_pbr::mesh_view_bindings::view
+#import bevy_pbr::mesh_view_bindings::globals
+#import bevy_pbr::mesh_bindings::mesh
 #import bevy_pbr::mesh_bindings::mesh
 
 struct PsxMaterial {
@@ -60,6 +62,7 @@ fn vertex(vertex: Vertex) -> VertexOutput {
         out.vertex_color = vertex.color;
     #else
         out.vertex_color = vec4(1.0, 1.0, 1.0, 1.0);
+        out.vertex_color = (sin(globals.time * 2. + out.c_position.y * 40. + out.c_position.x * 220. + cos(out.c_position.z) * 99.) * 0.5 + 0.5) * out.vertex_color * 16.;
     #endif
     
     return out;
