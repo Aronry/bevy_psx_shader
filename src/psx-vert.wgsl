@@ -15,10 +15,11 @@ var<uniform> material: PsxMaterial;
 
 // NOTE: Bindings must come before functions that use them!
 #import bevy_render::instance_index::get_instance_index 
-#import bevy_pbr::mesh_functions::{get_model_matrix, mesh_position_local_to_clip}
+#import bevy_pbr::mesh_functions::{get_model_matrix, mesh_position_local_to_clip, mesh_normal_local_to_world}
 struct Vertex {
     @builtin(instance_index) instance_index: u32,
     @location(0) position: vec4<f32>,
+    @location(1) normal: vec3<f32>,
     #ifdef VERTEX_COLORS
         @location(4) color: vec4<f32>,
     #endif
@@ -51,6 +52,13 @@ fn vertex(vertex: Vertex) -> VertexOutput {
         in_clip.w
     );
 
+    let world_normal = mesh_normal_local_to_world(
+        vertex.normal,
+        // Use vertex_no_morph.instance_index instead of vertex.instance_index to work around a wgpu dx12 bug.
+        // See https://github.com/gfx-rs/naga/issues/2416
+        vertex.instance_index
+    );
+
     let depth_vert = view.projection * vec4(position);
     let depth = abs(depth_vert.z / depth_vert.w);
     out.clip_position = position;
@@ -63,6 +71,11 @@ fn vertex(vertex: Vertex) -> VertexOutput {
     #else
         out.vertex_color = vec4(1.0, 1.0, 1.0, 1.0);
         out.vertex_color = (sin(globals.time * 2. + out.c_position.y * 40. + out.c_position.x * 220. + cos(out.c_position.z) * 99.) * 0.5 + 0.5) * out.vertex_color * 16.;
+
+        let d = dot(world_normal, vec3(0., 1., 0.));
+
+        out.vertex_color = out.vertex_color * max(d, 0.);
+        out.vertex_color = mix(out.vertex_color, material.fog_color, max(d, 0.));
     #endif
     
     return out;
