@@ -63,7 +63,7 @@ impl Default for PsxMaterial {
     fn default() -> Self {
         Self {
             color: Color::WHITE,
-            fog_color: Color::WHITE,
+            fog_color: (Color::PURPLE * 0.2).with_a(1.),
             snap_amount: 5.0,
             fog_distance: Vec2::new(25.0, 75.0),
             // dither_amount: 64.0,

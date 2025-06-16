@@ -74,8 +74,8 @@ fn vertex(vertex: Vertex) -> VertexOutput {
 
         let d = dot(world_normal, vec3(0., 1., 0.));
 
-        out.vertex_color = out.vertex_color * max(d, 0.);
-        out.vertex_color = mix(out.vertex_color, material.fog_color, max(d, 0.));
+        out.vertex_color = out.vertex_color * (d * 0.5 + 0.5);
+    //    out.vertex_color = mix(out.vertex_color, material.fog_color, max(d, 0.));
     #endif
     
     return out;
