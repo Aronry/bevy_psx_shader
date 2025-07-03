@@ -14,6 +14,7 @@ use bevy::{
         view::VisibleEntities,
     },
 };
+use noisy_bevy::NoisyShaderPlugin;
 
 use crate::material::{
     PsxDitherMaterial, PsxMaterial, PSX_DITHER_HANDLE, PSX_DITH_SHADER_HANDLE,
@@ -39,6 +40,7 @@ impl Plugin for PsxPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(MaterialPlugin::<PsxMaterial>::default());
         app.add_plugins(Material2dPlugin::<PsxDitherMaterial>::default());
+        app.add_plugins(NoisyShaderPlugin);
         app.register_type::<Camera>()
             .register_type::<Visibility>()
             .register_type::<InheritedVisibility>()
