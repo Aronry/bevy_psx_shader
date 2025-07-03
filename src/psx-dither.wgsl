@@ -184,12 +184,16 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
     let noise = (fract(sin(dot(in.uv * globals.time, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 2.0;
     let noise2 = sin(uv_displaced.x * 2220. + globals.time);
     let noise3 = sin(globals.time * 4. + uv_displaced.x * 24. + uv_displaced.y * 11.);
-    let noise4 = simplex_noise_3d(vec3(uv_scaled * 20., 2. * sin(globals.time)));
-    let noise5 = simplex_noise_2d(vec2(uv_scaled.x * 192., globals.time * 3.)) * 0.1;
+    let noise4 = simplex_noise_3d(vec3(uv_scaled * 10., 2. * sin(globals.time)));
+    let noise5 = (simplex_noise_2d(vec2(uv_scaled.x * 192., globals.time * 3.)) * 0.5 + 0.5) * 0.1;
 
-    if noise4 > 0. {
+
+
+    if noise5 > 0. {
         uv_displaced.y = round(uv_displaced.y / noise5) * noise5; //noise2 * 0.01;
     }
+
+    uv_displaced = mix(uv_displaced, in.uv,  1. - max(0.,noise4));
     //Noise stuff
     var maxStrength = 0.025;
     let minStrength = 0.125;
