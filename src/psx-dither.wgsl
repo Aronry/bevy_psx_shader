@@ -178,10 +178,12 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
 
     let iResolution = vec2<f32>(textureDimensions(base_color_texture));
 
+    let noise = (fract(sin(dot(in.uv * globals.time, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 2.0;
+/* 
     let uv_scaled = vec2(floor(uv_displaced.x * iResolution.x) / iResolution.x, 
                         floor(uv_displaced.y * iResolution.y) / iResolution.y);
 
-    let noise = (fract(sin(dot(in.uv * globals.time, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 2.0;
+    
     let noise2 = sin(uv_displaced.x * 2220. + globals.time);
     let noise3 = sin(globals.time * 4. + uv_displaced.x * 24. + uv_displaced.y * 11.);
     let noise4 = simplex_noise_3d(vec3(uv_scaled * 10., 2. * sin(globals.time)));
@@ -193,7 +195,7 @@ fn fragment(in: FragmentInput) -> @location(0) vec4<f32> {
         uv_displaced.y = round(uv_displaced.y / noise5) * noise5; //noise2 * 0.01;
     }
 
-    uv_displaced = mix(uv_displaced, in.uv,  1. - max(0.,noise4));
+    uv_displaced = mix(uv_displaced, in.uv,  1. - max(0.,noise4)); */
     //Noise stuff
     var maxStrength = 0.025;
     let minStrength = 0.125;
